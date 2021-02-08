@@ -13,4 +13,6 @@ interface UserRepositoryInterface
      * @return User|null Null if no user or wrong password
      */
     public function authenticate($username, $encryptedPassword);
+
+    public function save(User $user);
 }

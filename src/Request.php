@@ -79,6 +79,11 @@ class Request
         return $this->postData;
     }
 
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
     public function isPost()
     {
         return $this->method === self::METHOD_POST;

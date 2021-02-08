@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\App;
 use App\Entity\User;
 use App\Repository\UserRepositoryInterface;
 use App\Request;
@@ -11,8 +12,8 @@ class Auth
 {
     const ID = 'Auth';
 
-    protected const APP_SECRET_KEY = 'APP_SECRET_KEY';
-    protected const APP_CREATE_USERS_TOKEN = 'APP_CREATE_USERS_TOKEN';
+    const APP_SECRET_KEY = 'APP_SECRET_KEY';
+    const APP_CREATE_USERS_TOKEN = 'APP_CREATE_USERS_TOKEN';
 
     /**
      * @var UserRepositoryInterface
@@ -33,9 +34,10 @@ class Auth
         if (!$token = $request->getHeaderValue('Authorization')) {
             return false;
         }
+
         $token = explode(' ', $token);
         if (array_key_exists(1, $token)) {
-            if ($token[1] === $request->getEnvVar(self::APP_CREATE_USERS_TOKEN)) {
+            if ($token[1] === App::getEnv(self::APP_CREATE_USERS_TOKEN)) {
                 return true;
             }
         }
@@ -85,7 +87,7 @@ class Auth
     public static function encryptPassword(Request $request, $password)
     {
         return password_hash(
-            $password . $request->getEnvVar(self::APP_SECRET_KEY),
+            $password . App::getEnv(self::APP_SECRET_KEY),
             PASSWORD_DEFAULT
         );
     }
