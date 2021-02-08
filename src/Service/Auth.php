@@ -84,7 +84,7 @@ class Auth
         return base64_encode($user->getUsername().':'.$password);
     }
 
-    public static function encryptPassword(Request $request, $password)
+    public static function encryptPassword($password)
     {
         return password_hash(
             $password . App::getEnv(self::APP_SECRET_KEY),

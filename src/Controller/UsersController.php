@@ -43,7 +43,8 @@ class UsersController extends AbstractController
 
         // save user to db
         $this->services->get(User::ID)->save(
-            $user = $form->fillUser(new \App\Entity\User(null))
+            $user = $form->fillUser(new \App\Entity\User(null)),
+            $form->getPassword()
         );
 
         // save user to db

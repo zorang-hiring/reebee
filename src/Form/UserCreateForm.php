@@ -36,4 +36,8 @@ class UserCreateForm extends AbstractForm
         return $user;
     }
 
+    public function getPassword()
+    {
+        return $this->password;
+    }
 }

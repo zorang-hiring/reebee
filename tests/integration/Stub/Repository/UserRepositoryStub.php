@@ -8,13 +8,20 @@ use App\Repository\UserRepositoryInterface;
 
 class UserRepositoryStub implements UserRepositoryInterface
 {
+    protected $savedData = [];
+
     public function authenticate($username, $encryptedPassword)
     {
         return false;
     }
 
-    public function save(User $user)
+    public function save($username, $encryptedPassword)
     {
-        // TODO: Implement save() method.
+        $this->savedData[] = ['username' => $username, 'password' => $encryptedPassword];
+    }
+
+    public function getSavedData()
+    {
+        return $this->savedData;
     }
 }

@@ -14,5 +14,5 @@ interface UserRepositoryInterface
      */
     public function authenticate($username, $encryptedPassword);
 
-    public function save(User $user);
+    public function save($username, $encryptedPassword);
 }
