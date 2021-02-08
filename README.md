@@ -6,11 +6,11 @@ PHP version > 7.1 needed.
 
 Run tests:
 '''
-composer test
+php composer.phar test
 
 '''
 
 Watch tests:
 ```
-composer watch
+php composer.phar watch
 ```

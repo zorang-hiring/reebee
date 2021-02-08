@@ -21,8 +21,11 @@
     verbose="false">
 
     <testsuites>
-        <testsuite name="all">
-            <directory>tests</directory>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/integration</directory>
         </testsuite>
     </testsuites>
 

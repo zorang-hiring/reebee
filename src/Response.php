@@ -13,6 +13,12 @@ class Response
      */
     protected $body = '';
 
+    protected $headers = [
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'Cache-Control: No-Cache'
+    ];
+
     public function getStatus()
     {
         return $this->status;
@@ -28,9 +34,16 @@ class Response
         return $this;
     }
 
-    public function getHeaders()
+    public function buildHeaders()
     {
-        return [];
+        $headers = $this->headers;
+        switch ($this->getStatus()) {
+            case 404:
+                $headers[]= 'HTTP/1.0 404 Not Found';
+                break;
+        }
+
+        return $headers;
     }
 
     /**
