@@ -32,6 +32,11 @@ abstract class AbstractController
         return $this->services->get(Auth::ID);
     }
 
+    protected function isAuthenticated(Request $request)
+    {
+        // todo chech authentication only once
+    }
+
     /**
      * @param array $body
      * @param int $status

@@ -16,6 +16,11 @@ class Auth
     const APP_CREATE_USERS_TOKEN = 'APP_CREATE_USERS_TOKEN';
 
     /**
+     * @var User|null|bool
+     */
+    protected $authenticated = null;
+
+    /**
      * @var UserRepositoryInterface
      */
     protected $userRepository;
@@ -50,28 +55,31 @@ class Auth
      */
     public function authenticateBasic(Request $request)
     {
+        if ($this->authenticated !== null) {
+            return $this->authenticated;
+        }
         if (!$token = $request->getHeaderValue('Authorization')) {
-            return false;
+            return $this->authenticated = false;
         }
         $token = explode(' ', $token);
+        // check Authorization type
         if (!isset($token[0]) || $token[0] !== 'Basic') {
-            return false;
+            return $this->authenticated = false;
         }
-        if (array_key_exists(1, $token)) {
-            $decoded = base64_decode($token);
-            list($username, $pass) = explode(':', $decoded);
-            $user = $this->userRepository->isValidCredentials(
-                $username,
-                self::encryptPassword($request, $pass)
-            );
-            if (!$user) {
-                return false;
-            }
-            if ($user->getUsername()) {
+        // check if Authorization exists
+        if (!array_key_exists(1, $token)) {
+            return $this->authenticated = false;
+        }
 
-            }
+        // check Authorization token
+        $decoded = base64_decode($token);
+        list($username, $pass) = explode(':', $decoded);
+        $user = $this->userRepository->isValidCredentials($username, self::encryptPassword($pass));
+        if (!$user) {
+            return $this->authenticated =false;
         }
-        return false;
+
+        $this->authenticated = $user;
     }
 
     /**
