@@ -17,12 +17,6 @@ final class AppTest extends TestCase
         $response = $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL));
 
         self::assertSame(404,  $response->getStatus());
-        self::assertSame([
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'Cache-Control: No-Cache',
-            'HTTP/1.0 404 Not Found'
-        ],  $response->buildHeaders());
         self::assertSame('',  $response->getBody());
     }
 
@@ -32,13 +26,6 @@ final class AppTest extends TestCase
         $response = $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL . '/flyers'));
 
         self::assertSame(200,  $response->getStatus());
-        self::assertSame([
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'Cache-Control: No-Cache',
-            'HTTP/1.0 200 OK'
-
-        ],  $response->buildHeaders());
         self::assertSame('[]',  $response->getBody());
     }
 }

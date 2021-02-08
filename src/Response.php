@@ -13,12 +13,6 @@ class Response
      */
     protected $body = '';
 
-    protected $headers = [
-        'Content-Type: application/json',
-        'Accept: application/json',
-        'Cache-Control: No-Cache'
-    ];
-
     public function getStatus()
     {
         return $this->status;
@@ -34,45 +28,18 @@ class Response
         return $this;
     }
 
-    public function buildHeaders()
+    public function getBody()
     {
-        $headers = $this->headers;
-        switch ($this->getStatus()) {
-            case 200:
-                $headers[] = 'HTTP/1.0 200 OK';
-                break;
-            case 201:
-                $headers[] = 'HTTP/1.0 201 Created';
-                break;
-            case 204:
-                $headers[] = 'HTTP/1.0 204 No Content';
-                break;
-            case 400:
-                $headers[] = 'HTTP/1.0 400 Bad Request';
-                break;
-            case 401:
-                $headers[] = 'HTTP/1.0 401 Unauthorized';
-                break;
-            case 404:
-                $headers[] = 'HTTP/1.0 404 Not Found';
-                break;
-        }
-
-        return $headers;
+        return $this->body;
     }
 
     /**
-     * @param string $body
-     * @return self
+     * @param mixed $body
+     * @return $this
      */
     public function setBody(string $body)
     {
         $this->body = $body;
         return $this;
-    }
-
-    public function getBody()
-    {
-        return $this->body;
     }
 }

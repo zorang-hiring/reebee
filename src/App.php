@@ -21,7 +21,8 @@ class App
     }
 
     /**
-     * @param Response $response
+     * @param Request $request
+     * @return Response
      */
     public function dispatch(Request $request)
     {
@@ -39,8 +40,31 @@ class App
         return array_key_exists($envVarName, $envVars) ? $envVars[$envVarName] : null;
     }
 
-    public function output()
+    public function output(Request $request)
     {
-        // todo
+        $response = $this->dispatch($request);
+
+        // remove any previously printed string which can break json etc.
+        ob_clean();
+
+        // clean eventual previously added headers
+        header_remove();
+
+        // send headers
+         header("Access-Control-Allow-Origin: *");
+         header("Cache-Control: No-Cache");
+        if ($response instanceof ResponseJson) {
+            header("Content-Type: application/json; charset=utf-8");
+            header("Accept: application/json");
+        } else {
+            header("Content-Type: text/html; charset=utf-8");
+            header("Accept: text/html");
+        }
+        http_response_code($response->getStatus());
+
+        echo $response->getBody();
+
+        // will assure nothing is added after
+        exit();
     }
 }
