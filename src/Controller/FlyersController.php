@@ -15,9 +15,6 @@ class FlyersController extends AbstractController
 
     public function listAction(Request $request)
     {
-        $response = new ResponseJson();
-        $response->setStatus(200);
-        $response->setBody([]);
-        return $response;
+        return $this->newResponseJson([], 200);
     }
 }

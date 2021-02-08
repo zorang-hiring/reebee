@@ -35,9 +35,9 @@ class Response
 
     /**
      * @param mixed $body
-     * @return $this
+     * @return self
      */
-    public function setBody(string $body)
+    public function setBody($body)
     {
         $this->body = $body;
         return $this;

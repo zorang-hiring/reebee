@@ -7,11 +7,13 @@ class ResponseJson extends Response
 {
     /**
      * @param mixed $body
-     * @return $this
+     * @return self
      */
     public function setBody($body)
     {
-        parent::setBody(json_encode($body));
+        if ($body !== '' && $body !== null) {
+            parent::setBody(json_encode($body));
+        }
         return $this;
     }
 }

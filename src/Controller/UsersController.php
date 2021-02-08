@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Form\UserCreateForm;
 use App\Request;
+use App\Response;
 use App\ResponseJson;
 use App\Service\User;
 
@@ -16,20 +17,19 @@ class UsersController extends AbstractController
             return $this->postAction($request);
         }
 
-        return (new ResponseJson())->setStatus(404);
+        return $this->newResponseJson('', 404);
     }
 
     /**
      * Create new user
      *
      * @param Request $request
-     * @param Response $response
      * @return Response
      */
     public function postAction(Request $request)
     {
         if (!$this->getAuthentication()->isAllowedToCreateUsers($request)) {
-            return (new ResponseJson())->setStatus(401);
+            return $this->newResponseJson('', 401);
         }
 
         /** @var User $userService */
@@ -41,9 +41,7 @@ class UsersController extends AbstractController
         );
 
         if (!$form->isValid()) {
-            return (new ResponseJson())
-                ->setStatus(400)
-                ->setBody(['errors' => $form->getErrors()]);
+            return $this->newResponseJson(['errors' => $form->getErrors()], 400);
         }
 
         // save user to db
@@ -52,8 +50,6 @@ class UsersController extends AbstractController
         );
 
         // save user to db
-        return (new ResponseJson())
-            ->setStatus(201)
-            ->setBody($user);
+        return $this->newResponseJson($user, 201);
     }
 }
