@@ -43,12 +43,10 @@ class UsersController extends AbstractController
             return $this->newResponseJson(['errors' => $form->getErrors()], 400);
         }
 
-        // save user to db
         $userService->save(
             $user = $form->fillUser(new \App\Entity\User(null))
         );
 
-        // save user to db
         return $this->newResponseJson($user, 201);
     }
 }
