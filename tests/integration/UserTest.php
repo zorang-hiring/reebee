@@ -22,15 +22,20 @@ class UserTest extends TestCase
 {
     const BASE_URL = 'http://some.com';
 
+    /**
+     * Test create user - not authorised request
+     */
     public function testCreateUser_notAuthorised()
     {
-        $serviceContainer = new ServiceContainer();
-        $serviceContainer->addServices(Auth::ID, new Auth(new UserRepositoryStub()));
-        $app = new App($response = new Response(), $serviceContainer);
+        // GIVEN
+        $app = $this->initApplication(new UserRepositoryStub(), $response = new Response(), []);
+
+        // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'jon', 'password' => '123']);
         $app->dispatch($request);
 
+        // THEN
         self::assertSame(401, $response->getStatus());
         self::assertSame([
             'Content-Type: application/json',
@@ -41,18 +46,19 @@ class UserTest extends TestCase
         self::assertSame('', $response->getBody());
     }
 
+    /**
+     * Test create user - invalid authorised request
+     */
     public function testCreate_invalidRequestParams()
     {
-        $serviceContainer = new ServiceContainer();
-        $serviceContainer->addServices(Auth::ID, new Auth(new UserRepositoryStub()));
-        $serviceContainer->addServices(User::ID, new User(new UserRepositoryStub()));
-        $app = new App(
+        // GIVEN
+        $app = $this->initApplication(
+            new UserRepositoryStub(),
             $response = new Response(),
-            $serviceContainer,
-            [
-                Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken'
-            ]
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
         );
+
+        // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => '', 'password' => '']);
         $request->setHeaders([
@@ -60,6 +66,7 @@ class UserTest extends TestCase
         ]);
         $app->dispatch($request);
 
+        // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
             'Content-Type: application/json',
@@ -75,9 +82,12 @@ class UserTest extends TestCase
         ]), $response->getBody());
     }
 
+    /**
+     * Test create user - duplicated username
+     */
     public function testCreate_duplicatedUser()
     {
-        $serviceContainer = new ServiceContainer();
+        // GIVEN
         /** @var UserRepository $userRepository */
         $userRepository = self::getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
@@ -89,15 +99,13 @@ class UserTest extends TestCase
             ->method('findOneByUsername')
             ->with('bob')
             ->willReturn(true);
-        $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
-        $serviceContainer->addServices(User::ID, new User($userRepository));
-        $app = new App(
+        $app = $this->initApplication(
+            $userRepository,
             $response = new Response(),
-            $serviceContainer,
-            [
-                Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken'
-            ]
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
         );
+
+        // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'bob', 'password' => 'somePass']);
         $request->setHeaders([
@@ -105,6 +113,7 @@ class UserTest extends TestCase
         ]);
         $app->dispatch($request);
 
+        // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
             'Content-Type: application/json',
@@ -119,19 +128,20 @@ class UserTest extends TestCase
         ]), $response->getBody());
     }
 
+    /**
+     * Test create user - successful
+     */
     public function testCreate_success()
     {
-        $serviceContainer = new ServiceContainer();
+        // GIVEN
         $userRepository = new UserRepositoryStub();
-        $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
-        $serviceContainer->addServices(User::ID, new User($userRepository));
-        $app = new App(
+        $app = $this->initApplication(
+            $userRepository,
             $response = new Response(),
-            $serviceContainer,
-            [
-                Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken'
-            ]
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
         );
+
+        // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'bob', 'password' => 'somePassword']);
         $request->setHeaders([
@@ -139,6 +149,7 @@ class UserTest extends TestCase
         ]);
         $app->dispatch($request);
 
+        // THEN
         $savedDbData = $userRepository->getSavedData();
         self::assertCount(1, $savedDbData);
         self::assertSame('bob', $savedDbData[0]->getUsername());
@@ -155,7 +166,24 @@ class UserTest extends TestCase
         self::assertSame(json_encode(['username' => 'bob']), $response->getBody());
     }
 
-    function getProtectedProperty($obj, $prop) {
+    protected function initApplication(
+        UserRepositoryInterface $userRepository,
+        Response $response,
+        array $options = []
+    ){
+        $serviceContainer = new ServiceContainer();
+        $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
+        $serviceContainer->addServices(User::ID, new User($userRepository));
+        $evnVariables = !empty($options['envVariables']) ? $options['envVariables'] : [];
+        $app = new App(
+            $response,
+            $serviceContainer,
+            $evnVariables
+        );
+        return $app;
+    }
+
+    protected function getProtectedProperty($obj, $prop) {
         $reflection = new \ReflectionClass($obj);
         $property = $reflection->getProperty($prop);
         $property->setAccessible(true);
