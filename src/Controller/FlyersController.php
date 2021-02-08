@@ -6,7 +6,7 @@ namespace App\Controller;
 use App\Request;
 use App\Response;
 
-class FlyersController
+class FlyersController extends AbstractController
 {
     public function indexAction(Request $request, Response $response)
     {

@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Request;
 
+use App\Controller\AbstractController;
 use App\FlyerController;
 use App\Request;
 use App\Response;
+use App\ServiceContainer;
 
 class Dispatcher
 {
@@ -19,10 +21,16 @@ class Dispatcher
      */
     protected $response;
 
-    public function __construct(Request $request, Response $response)
+    /**
+     * @var ServiceContainer
+     */
+    protected $serviceContainer;
+
+    public function __construct(Request $request, Response $response, ServiceContainer $serviceContainer)
     {
         $this->request = $request;
         $this->response = $response;
+        $this->serviceContainer = $serviceContainer;
     }
 
     public function dispatch()
@@ -74,7 +82,11 @@ class Dispatcher
             return null;
         }
 
-        return new $controllerName();
+        /** @var AbstractController $controller */
+        $controller = new $controllerName();
+        $controller->setServiceContainer($this->serviceContainer);
+
+        return $controller;
     }
 
     protected function getActionName()

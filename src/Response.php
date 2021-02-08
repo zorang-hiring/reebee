@@ -38,8 +38,23 @@ class Response
     {
         $headers = $this->headers;
         switch ($this->getStatus()) {
+            case 200:
+                $headers[] = 'HTTP/1.0 200 OK';
+                break;
+            case 201:
+                $headers[] = 'HTTP/1.0 201 Created';
+                break;
+            case 204:
+                $headers[] = 'HTTP/1.0 204 No Content';
+                break;
+            case 400:
+                $headers[] = 'HTTP/1.0 400 Bad Request';
+                break;
+            case 401:
+                $headers[] = 'HTTP/1.0 401 Unauthorized';
+                break;
             case 404:
-                $headers[]= 'HTTP/1.0 404 Not Found';
+                $headers[] = 'HTTP/1.0 404 Not Found';
                 break;
         }
 

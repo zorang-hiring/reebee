@@ -1,20 +1,21 @@
 <?php
 declare(strict_types=1);
-namespace Tests;
+namespace Tests\Unit;
 
 use App\App;
 use App\Response;
 use App\Request;
+use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 
 final class AppTest extends TestCase
 {
-    const URL = 'http://a.b.com';
+    const BASE_URL = 'http://some.com';
 
     public function testAppEmptyRequest_response()
     {
-        $app = new App($response = new Response());
-        $app->dispatch(new Request(self::URL));
+        $app = new App($response = new Response(), new ServiceContainer());
+        $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL));
 
         self::assertSame(404,  $response->getStatus());
         self::assertSame([
@@ -28,14 +29,16 @@ final class AppTest extends TestCase
 
     public function testAppGetFlyersRequest_response()
     {
-        $app = new App($response = new Response());
-        $app->dispatch(new Request(self::URL . '/flyers'));
+        $app = new App($response = new Response(), new ServiceContainer());
+        $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL . '/flyers'));
 
         self::assertSame(200,  $response->getStatus());
         self::assertSame([
             'Content-Type: application/json',
             'Accept: application/json',
-            'Cache-Control: No-Cache'
+            'Cache-Control: No-Cache',
+            'HTTP/1.0 200 OK'
+
         ],  $response->buildHeaders());
         self::assertSame('[]',  $response->getBody());
     }

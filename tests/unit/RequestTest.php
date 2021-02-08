@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Tests;
+namespace Tests\Unit;
 
 use App\App;
 use App\Response;
@@ -11,7 +11,7 @@ final class RequestTest extends TestCase
 {
     public function testEmpty()
     {
-        $request = new Request('');
+        $request = new Request('', '');
 
         self::assertSame('', $request->getPath());
         self::assertSame(null, $request->getQuery());
@@ -19,7 +19,7 @@ final class RequestTest extends TestCase
 
     public function testFilled()
     {
-        $request = new Request('http://some.url/a/b/?c=d');
+        $request = new Request(Request::METHOD_GET, 'http://some.url/a/b/?c=d');
 
         self::assertSame('/a/b/', $request->getPath());
         self::assertSame(['c' => 'd'], $request->getQuery());

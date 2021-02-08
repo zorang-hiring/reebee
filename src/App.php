@@ -12,14 +12,20 @@ class App
      */
     protected $response;
 
-    public function __construct(Response $response)
+    /**
+     * @var ServiceContainer
+     */
+    protected $serviceContainer;
+
+    public function __construct(Response $response, ServiceContainer $serviceContainer)
     {
         $this->response = $response;
+        $this->serviceContainer = $serviceContainer;
     }
 
     public function dispatch(Request $request)
     {
-        $dispatcher = new Dispatcher($request, $this->response);
+        $dispatcher = new Dispatcher($request, $this->response, $this->serviceContainer);
         $dispatcher->dispatch();
     }
 
