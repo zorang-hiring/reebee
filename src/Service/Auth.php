@@ -60,7 +60,7 @@ class Auth
         if (array_key_exists(1, $token)) {
             $decoded = base64_decode($token);
             list($username, $pass) = explode(':', $decoded);
-            $user = $this->userRepository->authenticate(
+            $user = $this->userRepository->isValidCredentials(
                 $username,
                 self::encryptPassword($request, $pass)
             );

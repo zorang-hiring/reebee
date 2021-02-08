@@ -19,9 +19,9 @@ class User
         $this->userRepository = $userRepository;
     }
 
-    public function save(\App\Entity\User $user, $password)
+    public function save(\App\Entity\User $user)
     {
-        $this->userRepository->save($user->getUsername(), Auth::encryptPassword($password));
+        $this->userRepository->save($user);
     }
 
     public function getRepository()

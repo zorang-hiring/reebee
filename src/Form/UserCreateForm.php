@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\DbConnectorInterface;
 use App\Repository\UserRepositoryInterface;
 use App\Request;
+use App\Service\Auth;
 
 class UserCreateForm extends AbstractForm
 {
@@ -47,11 +48,7 @@ class UserCreateForm extends AbstractForm
     public function fillUser(User $user)
     {
         $user->setUsername($this->username);
+        $user->setPassword(Auth::encryptPassword($this->password));
         return $user;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
     }
 }
