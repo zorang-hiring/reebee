@@ -6,7 +6,6 @@ namespace App\Controller;
 use App\Form\UserCreateForm;
 use App\Request;
 use App\Response;
-use App\ResponseJson;
 use App\Service\User;
 
 class UsersController extends AbstractController

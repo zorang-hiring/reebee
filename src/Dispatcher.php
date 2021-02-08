@@ -1,12 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Request;
+namespace App;
 
 use App\Controller\AbstractController;
-use App\Request;
-use App\Response;
-use App\ServiceContainer;
 
 class Dispatcher
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request;
-use App\ResponseJson;
 
 class FlyersController extends AbstractController
 {

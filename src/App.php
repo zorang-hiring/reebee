@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Request\Dispatcher;
-
 class App
 {
     protected static $envVariables;
