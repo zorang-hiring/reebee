@@ -1,0 +1,14 @@
+{
+    "name": "zoran/reebee",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Zoran Gasic",
+            "email": "zoran.gasic@cleoo.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    }
+}
