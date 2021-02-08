@@ -11,7 +11,6 @@ use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
-
 //- Allow for creation of Users using the API token: `secret-token`
 //- Users should have at minimum a username and password to perform Basic Authentication
 
@@ -19,7 +18,7 @@ class UserTest extends TestCase
 {
     const BASE_URL = 'http://some.com';
 
-    public function testCreate_notAuthorised()
+    public function testCreateUser_notAuthorised()
     {
         $serviceContainer = new ServiceContainer();
         $serviceContainer->addServices(Auth::ID, new Auth(new UserRepositoryStub()));
@@ -95,9 +94,4 @@ class UserTest extends TestCase
 //        ], $response->buildHeaders());
 //        self::assertSame('', $response->getBody());
 //    }
-
-      protected function initApp()
-      {
-
-      }
 }

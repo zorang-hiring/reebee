@@ -19,8 +19,6 @@ class Request
 
     protected $headers = [];
 
-    protected $envVars = [];
-
     /**
      * @var string
      */
@@ -62,23 +60,6 @@ class Request
     public function setHeaders(array $headers)
     {
         $this->headers = $headers;
-    }
-
-    /**
-     * @param string $envVarName
-     * @return mixed|null
-     */
-    public function getEnvVar($envVarName)
-    {
-        return array_key_exists($envVarName, $this->envVars) ? $this->envVars[$envVarName] : null;
-    }
-
-    /**
-     * @param array $envVars
-     */
-    public function setEnvVars(array $envVars)
-    {
-        $this->envVars = $envVars;
     }
 
     /**
