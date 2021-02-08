@@ -11,13 +11,12 @@ final class AppTest extends TestCase
 {
     public function testAppExists()
     {
-        $request = new Request();
+        $request = new Request('');
         $presenter = new Response();
 
         $app = new App($presenter);
         $app->run($request);
-        //b
 
-        self::assertSame('hello', $presenter->print());
+        self::assertSame('hello',  $presenter->print());
     }
 }
