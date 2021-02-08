@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use App\App;
-use App\Presenter;
+use App\Response;
 use App\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -12,9 +12,12 @@ final class AppTest extends TestCase
     public function testAppExists()
     {
         $request = new Request();
-        $presenter = new Presenter();
+        $presenter = new Response();
 
         $app = new App($presenter);
         $app->run($request);
+        //b
+
+        self::assertSame('hello', $presenter->print());
     }
 }
