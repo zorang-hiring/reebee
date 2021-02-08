@@ -15,4 +15,6 @@ interface UserRepositoryInterface
     public function authenticate($username, $encryptedPassword);
 
     public function save($username, $encryptedPassword);
+
+    public function findOneByUsername($username);
 }

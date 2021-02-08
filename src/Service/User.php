@@ -23,4 +23,9 @@ class User
     {
         $this->userRepository->save($user->getUsername(), Auth::encryptPassword($password));
     }
+
+    public function getRepository()
+    {
+        return $this->userRepository;
+    }
 }

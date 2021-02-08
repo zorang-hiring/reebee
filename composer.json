@@ -28,5 +28,8 @@
             "Composer\\Config::disableProcessTimeout",
             "COMPOSER_PROCESS_TIMEOUT=0 ./vendor/bin/phpunit-watcher watch < /dev/tty"
         ]
+    },
+    "require": {
+        "doctrine/orm": "^2.8"
     }
 }

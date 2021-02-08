@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\App;
-use App\Repository\UserRepositoryInterface;
 use App\Service\Auth;
 use App\Request;
 use App\Response;
 use App\Service\User;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
+use Tests\Integration\Stub\Repository\DbConnectorStub;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 //- Allow for creation of Users using the API token: `secret-token`
@@ -43,6 +43,7 @@ class UserTest extends TestCase
     {
         $serviceContainer = new ServiceContainer();
         $serviceContainer->addServices(Auth::ID, new Auth(new UserRepositoryStub()));
+        $serviceContainer->addServices(User::ID, new User(new UserRepositoryStub()));
         $app = new App(
             $response = new Response(),
             $serviceContainer,
@@ -75,17 +76,7 @@ class UserTest extends TestCase
 //    public function testCreate_duplicatedUser()
 //    {
 //        $serviceContainer = new ServiceContainer();
-//        /** @var \PHPUnit_Framework_MockObject_MockObject|UserRepositoryInterface $userRepository */
-//        $userRepository = self::getMockBuilder(UserRepositoryInterface::class)
-//            ->setMethods(['authenticate', 'save'])
-//            ->getMock();
-//        $userRepository
-//            ->expects(self::once())
-//            ->method('save')
-//            ->with(
-//                (new \App\Entity\User('bob')),
-//                self::
-//            );
+//        $userRepository = new DbConnectorStub();
 //        $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
 //        $serviceContainer->addServices(User::ID, new User($userRepository));
 //        $app = new App(
@@ -96,12 +87,17 @@ class UserTest extends TestCase
 //            ]
 //        );
 //        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-//        $request->setPostData(['username' => 'bob', 'password' => 'abc123']);
+//        $request->setPostData(['username' => 'bob', 'password' => 'somePassword']);
 //        $request->setHeaders([
 //            'Authorization' => 'Basic createUsersToken'
 //        ]);
 //        $app->dispatch($request);
 //
+//        $savedDbData = $userRepository->getSavedData();
+//        self::assertCount(1, $savedDbData);
+//        self::assertSame('bob', $savedDbData[0]['username']);
+//        self::assertNotEmpty($savedDbData[0]['password'], 'password should be randomly encrypted');
+//        self::assertNotSame('somePassword', $savedDbData[0]['password'], 'password should be encrypted');
 //        self::assertSame(201, $response->getStatus());
 //        self::assertSame([
 //            'Content-Type: application/json',
@@ -109,9 +105,7 @@ class UserTest extends TestCase
 //            'Cache-Control: No-Cache',
 //            'HTTP/1.0 201 Created'
 //        ], $response->buildHeaders());
-//        self::assertSame(json_encode(
-//            ['username' => 'bob']
-//        ), $response->getBody());
+//        self::assertSame(json_encode(['username' => 'bob']), $response->getBody());
 //    }
 
     public function testCreate_success()

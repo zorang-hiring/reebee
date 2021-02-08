@@ -33,7 +33,13 @@ class UsersController extends AbstractController
             return $response->setStatus(401);
         }
 
-        $form = new UserCreateForm($request);
+        /** @var User $userService */
+        $userService = $this->services->get(User::ID);
+
+        $form = new UserCreateForm(
+            $request,
+            $userService->getRepository()
+        );
 
         if (!$form->isValid()) {
             return $response
@@ -42,7 +48,7 @@ class UsersController extends AbstractController
         }
 
         // save user to db
-        $this->services->get(User::ID)->save(
+        $userService->save(
             $user = $form->fillUser(new \App\Entity\User(null)),
             $form->getPassword()
         );

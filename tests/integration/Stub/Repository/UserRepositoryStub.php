@@ -20,6 +20,11 @@ class UserRepositoryStub implements UserRepositoryInterface
         $this->savedData[] = ['username' => $username, 'password' => $encryptedPassword];
     }
 
+    public function findOneByUsername($username)
+    {
+
+    }
+
     public function getSavedData()
     {
         return $this->savedData;
