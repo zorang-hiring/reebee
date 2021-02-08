@@ -10,14 +10,13 @@ use App\Service\User;
 
 class UsersController extends AbstractController
 {
-    public function indexAction(Request $request, Response $response)
+    public function indexAction(Request $request)
     {
         if ($request->isPost()) {
-            $this->postAction($request, $response);
-            return;
+            return $this->postAction($request);
         }
 
-        $response->setStatus(404);
+        return (new Response())->setStatus(404);
     }
 
     /**
@@ -27,10 +26,10 @@ class UsersController extends AbstractController
      * @param Response $response
      * @return Response
      */
-    public function postAction(Request $request, Response $response)
+    public function postAction(Request $request)
     {
         if (!$this->getAuthentication()->isAllowedToCreateUsers($request)) {
-            return $response->setStatus(401);
+            return (new Response())->setStatus(401);
         }
 
         /** @var User $userService */
@@ -42,7 +41,7 @@ class UsersController extends AbstractController
         );
 
         if (!$form->isValid()) {
-            return $response
+            return (new Response())
                 ->setStatus(400)
                 ->setBody(json_encode(['errors' => $form->getErrors()]));
         }
@@ -53,7 +52,7 @@ class UsersController extends AbstractController
         );
 
         // save user to db
-        return $response
+        return (new Response())
             ->setStatus(201)
             ->setBody(json_encode($user));
     }

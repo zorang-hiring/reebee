@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Request;
 
 use App\Controller\AbstractController;
-use App\FlyerController;
 use App\Request;
 use App\Response;
 use App\ServiceContainer;
@@ -17,49 +16,46 @@ class Dispatcher
     protected $request;
 
     /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
      * @var ServiceContainer
      */
     protected $serviceContainer;
 
-    public function __construct(Request $request, Response $response, ServiceContainer $serviceContainer)
+    public function __construct(Request $request, ServiceContainer $serviceContainer)
     {
         $this->request = $request;
-        $this->response = $response;
         $this->serviceContainer = $serviceContainer;
     }
 
+    /**
+     * @return Response
+     */
     public function dispatch()
     {
         $controllerName = null;
 
         if ($this->request->getPath() === null) {
-            $this->response->setStatus(404);
-            return;
+            return (new Response())->setStatus(404);
         }
 
         $controller = $this->getController();
         if (!$controller) {
-            $this->response->setStatus(404);
-            return;
+            return (new Response())->setStatus(404);
         }
 
         $actionName = $this->getActionName();
         if (!$actionName) {
-            $this->response->setStatus(404);
-            return;
+            return (new Response())->setStatus(404);
         }
 
         if (!method_exists($controller, $actionName)) {
-            $this->response->setStatus(404);
-            return;
+            return (new Response())->setStatus(404);
         }
 
-        $controller->{$actionName}($this->request, $this->response);
+        $response = $controller->{$actionName}($this->request);
+        if (!$response instanceof Response) {
+            throw new \RuntimeException('Controller action should return Response');
+        }
+        return $response;
     }
 
     protected function getController()

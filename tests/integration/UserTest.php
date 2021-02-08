@@ -15,9 +15,6 @@ use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\DbConnectorStub;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
-//- Allow for creation of Users using the API token: `secret-token`
-//- Users should have at minimum a username and password to perform Basic Authentication
-
 class UserTest extends TestCase
 {
     const BASE_URL = 'http://some.com';
@@ -33,7 +30,7 @@ class UserTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'jon', 'password' => '123']);
-        $app->dispatch($request);
+        $response = $app->dispatch($request);
 
         // THEN
         self::assertSame(401, $response->getStatus());
@@ -55,16 +52,18 @@ class UserTest extends TestCase
         $app = $this->initApplication(
             new UserRepositoryStub(),
             $response = new Response(),
-            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
+            // allowed API token to create user
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => '', 'password' => '']);
         $request->setHeaders([
-            'Authorization' => 'Basic createUsersToken'
+            // authorise request with Header:
+            'Authorization' => 'Basic some-api-token'
         ]);
-        $app->dispatch($request);
+        $response = $app->dispatch($request);
 
         // THEN
         self::assertSame(400, $response->getStatus());
@@ -102,16 +101,18 @@ class UserTest extends TestCase
         $app = $this->initApplication(
             $userRepository,
             $response = new Response(),
-            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
+            // allowed API token to create user
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'bob', 'password' => 'somePass']);
         $request->setHeaders([
-            'Authorization' => 'Basic createUsersToken'
+            // authorise request with Header:
+            'Authorization' => 'Basic some-api-token'
         ]);
-        $app->dispatch($request);
+        $response = $app->dispatch($request);
 
         // THEN
         self::assertSame(400, $response->getStatus());
@@ -138,16 +139,18 @@ class UserTest extends TestCase
         $app = $this->initApplication(
             $userRepository,
             $response = new Response(),
-            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'createUsersToken']]
+            // allowed API token to create user
+            ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
         $request->setPostData(['username' => 'bob', 'password' => 'somePassword']);
         $request->setHeaders([
-            'Authorization' => 'Basic createUsersToken'
+            // authorise request with Header:
+            'Authorization' => 'Basic some-api-token'
         ]);
-        $app->dispatch($request);
+        $response = $app->dispatch($request);
 
         // THEN
         $savedDbData = $userRepository->getSavedData();
@@ -176,7 +179,6 @@ class UserTest extends TestCase
         $serviceContainer->addServices(User::ID, new User($userRepository));
         $evnVariables = !empty($options['envVariables']) ? $options['envVariables'] : [];
         $app = new App(
-            $response,
             $serviceContainer,
             $evnVariables
         );

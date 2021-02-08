@@ -7,11 +7,6 @@ use App\Request\Dispatcher;
 
 class App
 {
-    /**
-     * @var Response
-     */
-    protected $response;
-
     protected static $envVariables;
 
     /**
@@ -19,17 +14,19 @@ class App
      */
     protected $serviceContainer;
 
-    public function __construct(Response $response, ServiceContainer $serviceContainer, $envVariables = [])
+    public function __construct(ServiceContainer $serviceContainer, $envVariables = [])
     {
-        $this->response = $response;
         $this->serviceContainer = $serviceContainer;
         self::$envVariables = $envVariables;
     }
 
+    /**
+     * @param Response $response
+     */
     public function dispatch(Request $request)
     {
-        $dispatcher = new Dispatcher($request, $this->response, $this->serviceContainer);
-        $dispatcher->dispatch();
+        $dispatcher = new Dispatcher($request, $this->serviceContainer);
+        return $dispatcher->dispatch();
     }
 
     /**

@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\App;
-use App\Response;
 use App\Request;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
@@ -14,8 +13,8 @@ final class AppTest extends TestCase
 
     public function testAppEmptyRequest_response()
     {
-        $app = new App($response = new Response(), new ServiceContainer());
-        $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL));
+        $app = new App(new ServiceContainer());
+        $response = $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL));
 
         self::assertSame(404,  $response->getStatus());
         self::assertSame([
@@ -29,8 +28,8 @@ final class AppTest extends TestCase
 
     public function testAppGetFlyersRequest_response()
     {
-        $app = new App($response = new Response(), new ServiceContainer());
-        $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL . '/flyers'));
+        $app = new App( new ServiceContainer());
+        $response = $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL . '/flyers'));
 
         self::assertSame(200,  $response->getStatus());
         self::assertSame([

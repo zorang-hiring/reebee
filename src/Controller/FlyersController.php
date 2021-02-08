@@ -8,14 +8,16 @@ use App\Response;
 
 class FlyersController extends AbstractController
 {
-    public function indexAction(Request $request, Response $response)
+    public function indexAction(Request $request)
     {
-        $this->listAction( $request,  $response);
+        return $this->listAction($request);
     }
 
-    public function listAction(Request $request, Response $response)
+    public function listAction(Request $request)
     {
+        $response = new Response();
         $response->setStatus(200);
         $response->setBody(json_encode([]));
+        return $response;
     }
 }
