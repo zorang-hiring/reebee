@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\App;
+use App\Repository\UserRepository;
+use App\Repository\UserRepositoryInterface;
 use App\Service\Auth;
 use App\Request;
 use App\Response;
@@ -75,11 +77,20 @@ class UserTest extends TestCase
 
     public function testCreate_duplicatedUser()
     {
-        self::markTestSkipped();
         $serviceContainer = new ServiceContainer();
-        // $userRepository
-        $serviceContainer->addServices(Auth::ID, new Auth(new UserRepositoryStub()));
-        $serviceContainer->addServices(User::ID, new User(new UserRepositoryStub()));
+        /** @var UserRepository $userRepository */
+        $userRepository = self::getMockBuilder(UserRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findOneByUsername', 'save'])
+            ->getMock();
+        $userRepository->expects(self::never())->method('save');
+        $userRepository
+            ->expects(self::atLeastOnce())
+            ->method('findOneByUsername')
+            ->with('bob')
+            ->willReturn(true);
+        $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
+        $serviceContainer->addServices(User::ID, new User($userRepository));
         $app = new App(
             $response = new Response(),
             $serviceContainer,
