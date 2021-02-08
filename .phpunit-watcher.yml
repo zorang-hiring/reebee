@@ -9,5 +9,5 @@ notifications:
 phpunit:
   binaryPath: vendor/bin/phpunit
   arguments: '--stop-on-failure'
-  timeout: 180
+  timeout: 0
 hideManual: true

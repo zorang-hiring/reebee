@@ -17,6 +17,9 @@ class Request
 
     }
 
+    /**
+     * @return null|string
+     */
     public function getPath()
     {
         return $this->urlElements['path'];

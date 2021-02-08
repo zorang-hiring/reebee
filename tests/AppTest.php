@@ -9,14 +9,25 @@ use PHPUnit\Framework\TestCase;
 
 final class AppTest extends TestCase
 {
-    public function testAppExists()
+    const URL = 'http://a.b.com';
+
+    public function testAppEmptyRequestDispatch()
     {
-        $request = new Request('');
-        $presenter = new Response();
+        $app = new App($response = new Response());
+        $app->dispatch(new Request(self::URL));
 
-        $app = new App($presenter);
-        $app->run($request);
+        self::assertSame(404,  $response->getStatus());
+        self::assertSame([],  $response->getHeaders());
+        self::assertSame('',  $response->getBody());
+    }
 
-        self::assertSame('hello',  $presenter->print());
+    public function testAppGetRequestDispatch()
+    {
+        $app = new App($response = new Response());
+        $app->dispatch(new Request(self::URL . '/flyers'));
+
+        self::assertSame(200,  $response->getStatus());
+        self::assertSame([],  $response->getHeaders());
+        self::assertSame('[]',  $response->getBody());
     }
 }
