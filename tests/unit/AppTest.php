@@ -11,7 +11,7 @@ final class AppTest extends TestCase
 {
     const URL = 'http://a.b.com';
 
-    public function testAppEmptyRequestDispatch()
+    public function testAppEmptyRequest_response()
     {
         $app = new App($response = new Response());
         $app->dispatch(new Request(self::URL));
@@ -26,7 +26,7 @@ final class AppTest extends TestCase
         self::assertSame('',  $response->getBody());
     }
 
-    public function testAppGetRequestDispatch()
+    public function testAppGetFlyersRequest_response()
     {
         $app = new App($response = new Response());
         $app->dispatch(new Request(self::URL . '/flyers'));
