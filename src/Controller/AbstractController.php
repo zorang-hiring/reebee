@@ -44,4 +44,9 @@ abstract class AbstractController
         $r->setStatus($status);
         return $r;
     }
+
+    protected function isAuthenticatedBasic(Request $request)
+    {
+        return !!$this->getAuthentication()->authenticateBasic($request);
+    }
 }

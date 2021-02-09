@@ -22,14 +22,14 @@ class FlyersController extends AbstractController
     public function getAction(Request $request)
     {
         return $this->newResponseJson(
-            $this->services->get(Flyer::ID)->find($request->getPathParam('id')),
+            $this->getFlyerById($request->getPathParam('id')),
             200
         );
     }
 
     public function postAction(Request $request)
     {
-        if (!$this->getAuthentication()->authenticateBasic($request)) {
+        if (!$this->isAuthenticatedBasic($request)) {
             return $this->newResponseJson([], 403);
         }
 
@@ -48,12 +48,11 @@ class FlyersController extends AbstractController
 
     public function patchAction(Request $request)
     {
-        if (!$this->getAuthentication()->authenticateBasic($request)) {
+        if (!$this->isAuthenticatedBasic($request)) {
             return $this->newResponseJson([], 403);
         }
 
-        /** @var \App\Entity\Flyer $flyer */
-        $flyer = $this->services->get(Flyer::ID)->find($request->getPathParam('id'));
+        $flyer = $this->getFlyerById($request->getPathParam('id'));
         if (!$flyer) {
             return $this->newResponseJson(['message' => 'no such flyer'], 400);
         }
@@ -72,12 +71,11 @@ class FlyersController extends AbstractController
 
     public function deleteAction(Request $request)
     {
-        if (!$this->getAuthentication()->authenticateBasic($request)) {
+        if (!$this->isAuthenticatedBasic($request)) {
             return $this->newResponseJson([], 403);
         }
 
-        /** @var \App\Entity\Flyer $flyer */
-        $flyer = $this->services->get(Flyer::ID)->find($request->getPathParam('id'));
+        $flyer = $this->getFlyerById($request->getPathParam('id'));
         if (!$flyer) {
             return $this->newResponseJson(['message' => 'no such flyer'], 400);
         }
@@ -85,5 +83,14 @@ class FlyersController extends AbstractController
         $this->services->get(Flyer::ID)->remove($flyer);
 
         return $this->newResponseJson([], 204);
+    }
+
+    /**
+     * @param $id
+     * @return \App\Entity\Flyer|null
+     */
+    protected function getFlyerById($id)
+    {
+        return $this->services->get(Flyer::ID)->find($id);
     }
 }
