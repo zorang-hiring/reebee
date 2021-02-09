@@ -30,28 +30,23 @@ class Dispatcher
     {
         $controllerName = null;
 
-        if ($this->request->getPath() === null) {
+        // define controller
+        if ($this->request->getPath() === null || !$controller = $this->getController()) {
             return (new Response())->setStatus(404);
         }
 
-        $controller = $this->getController();
-        if (!$controller) {
-            return (new Response())->setStatus(404);
-        }
-
+        // define action
         $actionName = $this->getActionName();
-        if (!$actionName) {
+        if (!$actionName || !method_exists($controller, $actionName)) {
             return (new Response())->setStatus(404);
         }
 
-        if (!method_exists($controller, $actionName)) {
-            return (new Response())->setStatus(404);
-        }
-
+        // dispatch controller action
         $response = $controller->{$actionName}($this->request);
         if (!$response instanceof Response) {
             throw new \RuntimeException('Controller action should return Response');
         }
+
         return $response;
     }
 
