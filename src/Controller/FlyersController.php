@@ -23,4 +23,19 @@ class FlyersController extends AbstractController
             200
         );
     }
+
+    public function postAction(Request $request)
+    {
+        return $this->newResponseJson([], 403);
+    }
+
+    public function patchAction(Request $request)
+    {
+        return $this->newResponseJson([], 403);
+    }
+
+    public function deleteAction(Request $request)
+    {
+        return $this->newResponseJson([], 403);
+    }
 }

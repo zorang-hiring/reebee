@@ -1,10 +1,4 @@
 <?php
-
-//- Flyers should be retrievable by requesting all valid flyers or by flyerID
-//- Anyone should be able to perform the Read operation for flyers
-//- Require a User to use Basic Authentication to access the Create, Update, and Delete operations
-
-
 use App\App;
 use App\Repository\FlyerRepository;
 use App\Repository\FlyerRepositoryInterface;
@@ -127,11 +121,18 @@ class FlyerTest extends TestCase
     public function testCreate_noAuth()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMockForAbstractClass();
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(403, $response->getStatus());
+        self::assertSame(403, $response->getStatus());
     }
 
     /**
@@ -153,11 +154,18 @@ class FlyerTest extends TestCase
     public function testUpdate_noAuth()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMockForAbstractClass();
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(403, $response->getStatus());
+        self::assertSame(403, $response->getStatus());
     }
 
     /**
@@ -179,11 +187,18 @@ class FlyerTest extends TestCase
     public function testDelete_noAuth()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMockForAbstractClass();
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5');
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(403, $response->getStatus());
+        self::assertSame(403, $response->getStatus());
     }
 
     /**
