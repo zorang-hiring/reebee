@@ -11,7 +11,7 @@ use App\Service\User;
 
 class AuthController extends AbstractController
 {
-    public function indexAction(Request $request)
+    public function postAction(Request $request)
     {
         if (!$request->isPost()) {
             $this->newResponseJson('', 405);

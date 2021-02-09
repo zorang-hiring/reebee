@@ -10,15 +10,6 @@ use App\Service\User;
 
 class UsersController extends AbstractController
 {
-    public function indexAction(Request $request)
-    {
-        if ($request->isPost()) {
-            return $this->postAction($request);
-        }
-
-        return $this->newResponseJson('', 404);
-    }
-
     /**
      * Create new user
      *

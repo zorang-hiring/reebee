@@ -82,11 +82,25 @@ class Dispatcher
         return $controller;
     }
 
+    /**
+     * This app is completely REST it dispatches REST actions only
+     *
+     * @return null|string
+     */
     protected function getActionName()
     {
         $pathElements = explode('/', trim($this->request->getPath(), '/'));
         if (count($pathElements) <= 1) {
-            return 'indexAction';
+            // standard reset actions
+            switch ($this->request->getMethod()) {
+                case Request::METHOD_GET:
+                    return 'indexAction';
+                    break;
+                case Request::METHOD_POST:
+                    return 'postAction';
+                    break;
+            }
+            return null;
         }
 
         if (is_numeric($pathElements[1])) {
