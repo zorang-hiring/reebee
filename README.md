@@ -14,3 +14,6 @@ Watch tests:
 ```
 php composer.phar watch
 ```
+
+# todo
+check and set app to utc

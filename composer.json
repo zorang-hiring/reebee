@@ -30,6 +30,7 @@
         ]
     },
     "require": {
-        "doctrine/orm": "^2.8"
+        "doctrine/orm": "^2.8",
+        "nesbot/carbon": "^2.45"
     }
 }

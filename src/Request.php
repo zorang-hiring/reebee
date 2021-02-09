@@ -19,6 +19,8 @@ class Request
 
     protected $headers = [];
 
+    protected $pathParams = [];
+
     /**
      * @var string
      */
@@ -102,6 +104,24 @@ class Request
     public function isPatch()
     {
         return $this->method === self::METHOD_PATCH;
+    }
+
+    public function setPathParam($name, $value)
+    {
+        $this->pathParams[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function getPathParam($name)
+    {
+        if (array_key_exists($name, $this->pathParams)) {
+            return $this->pathParams[$name];
+        }
+        return null;
     }
 
     /**

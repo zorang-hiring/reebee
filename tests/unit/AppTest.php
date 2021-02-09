@@ -19,13 +19,4 @@ final class AppTest extends TestCase
         self::assertSame(404,  $response->getStatus());
         self::assertSame('',  $response->getBody());
     }
-
-    public function testAppGetFlyersRequest_response()
-    {
-        $app = new App( new ServiceContainer());
-        $response = $app->dispatch(new Request(Request::METHOD_GET, self::BASE_URL . '/flyers'));
-
-        self::assertSame(200,  $response->getStatus());
-        self::assertSame('[]',  $response->getBody());
-    }
 }

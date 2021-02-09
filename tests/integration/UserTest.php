@@ -8,7 +8,6 @@ use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
 use App\Service\Auth;
 use App\Request;
-use App\Response;
 use App\Service\User;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;

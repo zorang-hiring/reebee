@@ -57,7 +57,7 @@ class Dispatcher
 
     protected function getController()
     {
-        $pathElements = explode(',', trim($this->request->getPath(), '/'));
+        $pathElements = explode('/', trim($this->request->getPath(), '/'));
         if (count($pathElements) === 0) {
             return null;
         }
@@ -84,9 +84,29 @@ class Dispatcher
 
     protected function getActionName()
     {
-        $pathElements = explode(',', trim($this->request->getPath(), '/'));
+        $pathElements = explode('/', trim($this->request->getPath(), '/'));
         if (count($pathElements) <= 1) {
             return 'indexAction';
+        }
+
+        if (is_numeric($pathElements[1])) {
+            // we consider that url path is: "something/<number>"
+            $this->request->setPathParam('id', $pathElements[1]);
+            // standard reset actions
+            switch ($this->request->getMethod()) {
+                case Request::METHOD_GET:
+                    return 'getAction';
+                    break;
+                case Request::METHOD_POST:
+                    return 'postAction';
+                    break;
+                case Request::METHOD_PATCH:
+                    return 'patchAction';
+                    break;
+                case Request::METHOD_DELETE:
+                    return 'deleteAction';
+                    break;
+            }
         }
 
         $action = str_replace(
