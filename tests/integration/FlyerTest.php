@@ -6,10 +6,9 @@ namespace Tests\Integration;
 use App\App;
 use App\Entity\User;
 use App\Repository\FlyerRepository;
-use App\Repository\UserRepository;
 use App\Repository\FlyerRepositoryInterface;
-use App\Repository\UserRepositoryInterface;
 use App\Request;
+use App\Service\Flyer;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
@@ -130,21 +129,9 @@ class FlyerTest extends TestCase
      */
     public function testCreate_noAuth()
     {
-        // GIVEN
-        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['save'])
-            ->getMockForAbstractClass();
-        $flyerRepository->expects(self::never())->method('save');
-        $app = $this->initApplication($flyerRepository);
-
-        // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
-        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode('not-existed-user:123')]);
-        $response = $app->dispatch($request);
-
-        // THEN
-        self::assertSame(403, $response->getStatus());
+        $this->_testNoAuth(
+            new Request(Request::METHOD_POST, self::BASE_URL . '/flyers')
+        );
     }
 
     public function dataProvider_testCreate_invalidRequestParams()
@@ -178,7 +165,7 @@ class FlyerTest extends TestCase
     }
 
     /**
-     * Test successful invalid request params
+     * Test create invalid request params
      *
      * @dataProvider dataProvider_testCreate_invalidRequestParams
      */
@@ -194,7 +181,7 @@ class FlyerTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
-        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode(self::EXISTING_USER_NAME. ':123')]);
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setPostData($postData);
         $response = $app->dispatch($request);
 
@@ -220,7 +207,7 @@ class FlyerTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
-        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode(self::EXISTING_USER_NAME. ':123')]);
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setPostData([
             'name' => '6',
             'storeName' => '7',
@@ -247,19 +234,113 @@ class FlyerTest extends TestCase
      */
     public function testUpdate_noAuth()
     {
+        $this->_testNoAuth(
+            new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5')
+        );
+    }
+
+    /**
+     * Test update for non existed flyer
+     */
+    public function testUpdate_noFlyer()
+    {
         // GIVEN
         $flyerRepository = self::getMockBuilder(FlyerRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods([])
+            ->setMethods(['save', 'findOne'])
             ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())
+            ->method('findOne')
+            ->with(3)
+            ->willReturn(null);
+        $flyerRepository->expects(self::never())->method('save');
+        $app = $this->initApplication($flyerRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/3');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setPostData([
+            'name' => '6',
+            'storeName' => '7',
+            'dateValid' => '2000-01-01',
+            'dateExpired' => '2001-01-01',
+            'pageCount' => 8,
+        ]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'message' => 'no such flyer'
+        ], json_decode($response->getBody(), true));
+    }
+
+    public function dataProvider_testUpdate_invalidRequestParams()
+    {
+        return [
+            [
+                [
+                    'name' => '',
+                ],
+                [
+                    'name' => ['Field can not be empty.']
+                ]
+            ],
+            [
+                [
+                    'storeName' => '',
+                    'dateValid' => 'b',
+                    'dateExpired' => 'c',
+                    'pageCount' => 'd'
+                ],
+                [
+                    'storeName' => ['Field can not be empty.'],
+                    'pageCount' => ['Has to be integer.'],
+                    'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test update invalid request params
+     *
+     * @dataProvider dataProvider_testUpdate_invalidRequestParams
+     */
+    public function testUpdate_invalidRequestParams($postData, $expectedValidationErrors)
+    {
+        // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'findOne'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Flyer())
+                    ->setFlyerID(5)
+                    ->setPageCount(41)
+                    ->setStoreName('old storeName')
+                    ->setName('old name')
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            );
+        $flyerRepository->expects(self::never())->method('save');
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
         $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setPostData($postData);
         $response = $app->dispatch($request);
 
         // THEN
-        self::assertSame(403, $response->getStatus());
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'errors' => $expectedValidationErrors
+        ], json_decode($response->getBody(), true));
     }
 
     /**
@@ -268,11 +349,51 @@ class FlyerTest extends TestCase
     public function testUpdate_success()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'findOne'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Flyer())
+                    ->setFlyerID(5)
+                    ->setPageCount(41)
+                    ->setStoreName('old storeName')
+                    ->setName('old name')
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            );
+        $flyerRepository->expects(self::once())
+            ->method('save')
+            ->with(
+                (new \App\Entity\Flyer())
+                    ->setFlyerID(5)
+                    ->setPageCount(42)
+                    ->setStoreName('new storeName')
+                    ->setName('new name')
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-02 00:00:00'))
+            )
+        ;
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setPostData([
+            'pageCount' => 42,
+            'storeName' => 'new storeName',
+            'name' => 'new name',
+            'dateValid' => '2010-01-01',
+            'dateExpired' => '2010-01-02',
+        ]);
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(204, $response->getStatus());
+        self::assertSame(204, $response->getStatus());
+        self::assertSame([], json_decode($response->getBody(), true));
     }
 
     /**
@@ -280,19 +401,9 @@ class FlyerTest extends TestCase
      */
     public function testDelete_noAuth()
     {
-        // GIVEN
-        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMockForAbstractClass();
-        $app = $this->initApplication($flyerRepository);
-
-        // WHEN
-        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5');
-        $response = $app->dispatch($request);
-
-        // THEN
-        self::assertSame(403, $response->getStatus());
+        $this->_testNoAuth(
+            new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5')
+        );
     }
 
     /**
@@ -306,6 +417,22 @@ class FlyerTest extends TestCase
 
         // THEN
         // self::assertSame(204, $response->getStatus());
+    }
+
+    protected function _testNoAuth(Request $request)
+    {
+        // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMockForAbstractClass();
+        $app = $this->initApplication($flyerRepository);
+
+        // WHEN
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(403, $response->getStatus());
     }
 
     protected function initApplication(
@@ -326,5 +453,10 @@ class FlyerTest extends TestCase
             $evnVariables
         );
         return $app;
+    }
+
+    protected function addBasicAuthHeader(Request $request, array $options)
+    {
+        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode($options['user']. ':123')]);
     }
 }

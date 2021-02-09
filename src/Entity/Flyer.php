@@ -122,7 +122,7 @@ class Flyer implements \JsonSerializable
     /**
      * @return \DateTime
      */
-    public function getDateValid(): \DateTime
+    public function getDateValid()
     {
         return $this->dateValid;
     }
@@ -140,7 +140,7 @@ class Flyer implements \JsonSerializable
     /**
      * @return \DateTime
      */
-    public function getDateExpired(): \DateTime
+    public function getDateExpired()
     {
         return $this->dateExpired;
     }
@@ -179,8 +179,8 @@ class Flyer implements \JsonSerializable
             'flyerID' => $this->getFlyerID(),
             'name' => $this->getName(),
             'storeName' => $this->getStoreName(),
-            'dateValid' => $this->getDateValid()->format('Y-m-d'),
-            'dateExpired' => $this->getDateExpired()->format('Y-m-d'),
+            'dateValid' => $this->getDateValid() ? $this->getDateValid()->format('Y-m-d') : null,
+            'dateExpired' => $this->getDateExpired() ? $this->getDateExpired()->format('Y-m-d') : null,
             'pageCount' => $this->getPageCount(),
         ];
     }

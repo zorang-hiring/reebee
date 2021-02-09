@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\User;
-use App\Repository\DbConnectorInterface;
 use App\Repository\UserRepositoryInterface;
 use App\Request;
 use App\Service\Auth;
