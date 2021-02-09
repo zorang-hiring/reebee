@@ -15,5 +15,8 @@ Watch tests:
 php composer.phar watch
 ```
 
-# todo
+## todo
 check and set app to utc
+
+## API docs
+[http://localhost:8080/api-ui/](http://localhost:8080/api-ui/)

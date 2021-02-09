@@ -57,6 +57,8 @@ class Flyer implements \JsonSerializable
     protected $dateExpired;
 
     /**
+     * @todo remove since pages will be read automatically
+     *
      * The number of pages in the flyer
      *
      * @ORM\Column(type="integer", unique=true, nullable=false)
@@ -64,6 +66,12 @@ class Flyer implements \JsonSerializable
      * @var Integer
      */
     protected $pageCount;
+
+    /**
+     * this is relation 1:n !
+     * @var
+     */
+    protected $pages;
 
     /**
      * @return mixed
@@ -164,6 +172,8 @@ class Flyer implements \JsonSerializable
     }
 
     /**
+     * @todo remove since pages will be read automatically
+     *
      * @param int $pageCount
      * @return self
      */
