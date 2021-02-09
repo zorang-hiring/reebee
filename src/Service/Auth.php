@@ -74,12 +74,22 @@ class Auth
         // check Authorization token
         $decoded = base64_decode($token);
         list($username, $pass) = explode(':', $decoded);
-        $user = $this->userRepository->isValidCredentials($username, self::encryptPassword($pass));
+        $user = $this->findUserByCredentials($username, $pass);
         if (!$user) {
             return $this->authenticated =false;
         }
 
         $this->authenticated = $user;
+    }
+
+    /**
+     * @param $username
+     * @param $pass
+     * @return User|null
+     */
+    public function findUserByCredentials($username, $pass)
+    {
+        return $this->userRepository->findUserByCredentials($username, self::encryptPassword($pass));
     }
 
     /**

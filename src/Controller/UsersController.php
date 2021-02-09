@@ -34,10 +34,7 @@ class UsersController extends AbstractController
         /** @var User $userService */
         $userService = $this->services->get(User::ID);
 
-        $form = new UserCreateForm(
-            $request,
-            $userService->getRepository()
-        );
+        $form = new UserCreateForm($request, $userService->getRepository());
 
         if (!$form->isValid()) {
             return $this->newResponseJson(['errors' => $form->getErrors()], 400);

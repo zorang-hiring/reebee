@@ -12,7 +12,7 @@ interface UserRepositoryInterface
      * @param string $encryptedPassword
      * @return User|null Null if no user or wrong password
      */
-    public function isValidCredentials($username, $encryptedPassword);
+    public function findUserByCredentials($username, $encryptedPassword);
 
     public function save(User $user);
 

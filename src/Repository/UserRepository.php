@@ -11,11 +11,11 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
     /**
      * @param string $username
      * @param string $encryptedPassword
-     * @return boolean
+     * @return User|null
      */
-    public function isValidCredentials($username, $encryptedPassword)
+    public function findUserByCredentials($username, $encryptedPassword)
     {
-        return !!$this->findOneBy(['username' => $username, 'password' => $encryptedPassword]);
+        return $this->findOneBy(['username' => $username, 'password' => $encryptedPassword]);
     }
 
     /**

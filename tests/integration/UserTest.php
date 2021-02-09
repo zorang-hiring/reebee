@@ -25,11 +25,11 @@ class UserTest extends TestCase
     public function testCreateUser_notAuthorised()
     {
         // GIVEN
-        $app = $this->initApplication(new UserRepositoryStub(), $response = new Response(), []);
+        $app = $this->initApplication(new UserRepositoryStub(), []);
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-        $request->setPostData(['username' => 'jon', 'password' => '123']);
+        $request->setPostData(['username' => 'bob', 'password' => '123']);
         $response = $app->dispatch($request);
 
         // THEN
@@ -45,7 +45,6 @@ class UserTest extends TestCase
         // GIVEN
         $app = $this->initApplication(
             new UserRepositoryStub(),
-            $response = new Response(),
             // allowed API token to create user
             ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
@@ -88,7 +87,6 @@ class UserTest extends TestCase
             ->willReturn(true);
         $app = $this->initApplication(
             $userRepository,
-            $response = new Response(),
             // allowed API token to create user
             ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
@@ -120,7 +118,6 @@ class UserTest extends TestCase
         $userRepository = new UserRepositoryStub();
         $app = $this->initApplication(
             $userRepository,
-            $response = new Response(),
             // allowed API token to create user
             ['envVariables' => [Auth::APP_CREATE_USERS_TOKEN => 'some-api-token']]
         );
@@ -145,11 +142,8 @@ class UserTest extends TestCase
         self::assertSame(json_encode(['username' => 'bob']), $response->getBody());
     }
 
-    protected function initApplication(
-        UserRepositoryInterface $userRepository,
-        Response $response,
-        array $options = []
-    ){
+    protected function initApplication(UserRepositoryInterface $userRepository, array $options = [])
+    {
         $serviceContainer = new ServiceContainer();
         $serviceContainer->addServices(Auth::ID, new Auth($userRepository));
         $serviceContainer->addServices(User::ID, new User($userRepository));

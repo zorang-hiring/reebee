@@ -11,7 +11,7 @@ class UserRepositoryStub implements UserRepositoryInterface
 {
     protected $savedData = [];
 
-    public function isValidCredentials($username, $encryptedPassword)
+    public function findUserByCredentials($username, $encryptedPassword)
     {
         return false;
     }
