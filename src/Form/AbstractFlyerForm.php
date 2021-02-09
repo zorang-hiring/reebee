@@ -15,6 +15,15 @@ abstract class AbstractFlyerForm extends AbstractForm
         'pageCount' => false
     ];
 
+    public function __construct(array $data)
+    {
+        foreach (array_keys($this->fields) as $fieldName) {
+            if (array_key_exists($fieldName, $data)) {
+                $this->fields[$fieldName] = $data[$fieldName];
+            }
+        }
+    }
+
     public function fillFlyer(Flyer $flyer)
     {
         if ($this->fields['name'] !== false) {
@@ -37,14 +46,5 @@ abstract class AbstractFlyerForm extends AbstractForm
           $flyer->setPageCount($this->fields['pageCount']);
         }
         return $flyer;
-    }
-
-    public function fillForm(array $data)
-    {
-        foreach (array_keys($this->fields) as $fieldName) {
-            if (array_key_exists($fieldName, $data)) {
-                $this->fields[$fieldName] = $data[$fieldName];
-            }
-        }
     }
 }

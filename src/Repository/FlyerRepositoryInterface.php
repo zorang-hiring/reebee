@@ -22,4 +22,9 @@ interface FlyerRepositoryInterface
      * @param Flyer $flyer
      */
     public function save(Flyer $flyer);
+
+    /**
+     * @param Flyer $flyer
+     */
+    public function remove(Flyer $flyer);
 }

@@ -407,16 +407,78 @@ class FlyerTest extends TestCase
     }
 
     /**
+     * Test delete for non existed flyer
+     */
+    public function testDelete_noFlyer()
+    {
+        // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['remove', 'findOne'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())
+            ->method('findOne')
+            ->with(3)
+            ->willReturn(null);
+        $flyerRepository->expects(self::never())->method('remove');
+        $app = $this->initApplication($flyerRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/3');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'message' => 'no such flyer'
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
      * Test successful fayer delete
      */
     public function testDelete_success()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['remove', 'findOne'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Flyer())
+                    ->setFlyerID(5)
+                    ->setPageCount(41)
+                    ->setStoreName('storeName')
+                    ->setName('name')
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            );
+        $flyerRepository->expects(self::once())
+            ->method('remove')
+            ->with(
+                (new \App\Entity\Flyer())
+                    ->setFlyerID(5)
+                    ->setPageCount(41)
+                    ->setStoreName('storeName')
+                    ->setName('name')
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            )
+        ;
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(204, $response->getStatus());
+        self::assertSame(204, $response->getStatus());
+        self::assertSame([], json_decode($response->getBody(), true));
     }
 
     protected function _testNoAuth(Request $request)

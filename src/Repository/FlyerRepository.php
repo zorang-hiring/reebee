@@ -41,4 +41,15 @@ class FlyerRepository extends EntityRepository implements FlyerRepositoryInterfa
         $this->getEntityManager()->persist($flyer);
         $this->getEntityManager()->flush($flyer);
     }
+
+    /**
+     * @param Flyer $flyer
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function remove(Flyer $flyer)
+    {
+        $this->getEntityManager()->remove($flyer);
+        $this->getEntityManager()->flush($flyer);
+    }
 }

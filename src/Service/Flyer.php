@@ -40,4 +40,9 @@ class Flyer
     {
         $this->flyerRepository->save($flyer);
     }
+
+    public function remove(\App\Entity\Flyer $flyer)
+    {
+        $this->flyerRepository->remove($flyer);
+    }
 }
