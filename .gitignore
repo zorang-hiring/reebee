@@ -1,8 +1,7 @@
-composer.phar
-/vendor/
+# composer.phar
 .idea
 .env
-vendor
+src/vendor
 .phpunit.result.cache
 .DS_Store
 

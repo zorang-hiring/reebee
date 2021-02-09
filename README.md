@@ -6,13 +6,13 @@ PHP version > 7.1 needed.
 
 Run tests:
 '''
-php composer.phar test
+cd src && php composer.phar test
 
 '''
 
 Watch tests:
 ```
-php composer.phar watch
+cd src && php composer.phar watch
 ```
 
 ## todo
