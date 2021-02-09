@@ -35,4 +35,9 @@ class Flyer
     {
         return $this->flyerRepository->findOne($id);
     }
+
+    public function save(\App\Entity\Flyer $flyer)
+    {
+        $this->flyerRepository->save($flyer);
+    }
 }

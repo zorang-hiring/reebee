@@ -11,9 +11,27 @@ class UserRepositoryStub implements UserRepositoryInterface
 {
     protected $savedData = [];
 
+    /**
+     * @var User[]
+     */
+    protected $findUserByCredentialsData = [];
+
     public function findUserByCredentials($username, $encryptedPassword)
     {
+        foreach ($this->findUserByCredentialsData as $user) {
+            if ($user->getUsername() === $username) {
+                return $user;
+            }
+        }
         return false;
+    }
+
+    /**
+     * @param User[] $findUserByCredentialsData
+     */
+    public function setFindUserByCredentialsData(array $findUserByCredentialsData)
+    {
+        $this->findUserByCredentialsData = $findUserByCredentialsData;
     }
 
     public function save(User $user)

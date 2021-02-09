@@ -31,18 +31,18 @@ class UserCreateForm extends AbstractForm
     public function isValid()
     {
         if (strlen($this->username) === 0 || strlen($this->username) > 255) {
-            $this->errors['username'] = 'Has to be between 0 and 255 characters.';
+            $this->addError('username', 'Has to be between 0 and 255 characters.');
         }
         if (strlen($this->password) <= 3 || strlen($this->password) > 20) {
-            $this->errors['password'] = 'Has to be between 3 and 20 characters.';
+            $this->addError('password', 'Has to be between 3 and 20 characters.');
         }
         if (empty($this->errors['username'])) {
             if ($this->userRepository->findOneByUsername($this->username)){
-                $this->errors['username'] = 'Username already exists.';
+                $this->addError('username', 'Username already exists.');
             }
         }
 
-        return empty($this->errors);
+        return empty($this->getErrors());
     }
 
     public function fillUser(User $user)

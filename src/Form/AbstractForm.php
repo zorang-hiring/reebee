@@ -7,7 +7,7 @@ use App\Request;
 
 abstract class AbstractForm
 {
-    protected $errors = [];
+    private $errors = [];
 
     /**
      * @return bool
@@ -20,5 +20,13 @@ abstract class AbstractForm
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    protected function addError($field, $message)
+    {
+        if (!array_key_exists($field, $this->errors)) {
+            $this->errors[$field] = [];
+        }
+        $this->errors[$field][] = $message;
     }
 }

@@ -86,7 +86,7 @@ class Flyer implements \JsonSerializable
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -95,7 +95,7 @@ class Flyer implements \JsonSerializable
      * @param string $name
      * @return self
      */
-    public function setName(string $name): Flyer
+    public function setName($name): Flyer
     {
         $this->name = $name;
         return $this;
@@ -104,7 +104,7 @@ class Flyer implements \JsonSerializable
     /**
      * @return string
      */
-    public function getStoreName(): string
+    public function getStoreName()
     {
         return $this->storeName;
     }
@@ -113,7 +113,7 @@ class Flyer implements \JsonSerializable
      * @param string $storeName
      * @return self
      */
-    public function setStoreName(string $storeName): Flyer
+    public function setStoreName($storeName): Flyer
     {
         $this->storeName = $storeName;
         return $this;
@@ -158,7 +158,7 @@ class Flyer implements \JsonSerializable
     /**
      * @return int
      */
-    public function getPageCount(): int
+    public function getPageCount()
     {
         return $this->pageCount;
     }
@@ -167,7 +167,7 @@ class Flyer implements \JsonSerializable
      * @param int $pageCount
      * @return self
      */
-    public function setPageCount(int $pageCount): Flyer
+    public function setPageCount($pageCount): Flyer
     {
         $this->pageCount = $pageCount;
         return $this;

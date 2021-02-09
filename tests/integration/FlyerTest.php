@@ -1,14 +1,24 @@
 <?php
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
 use App\App;
+use App\Entity\User;
 use App\Repository\FlyerRepository;
+use App\Repository\UserRepository;
 use App\Repository\FlyerRepositoryInterface;
+use App\Repository\UserRepositoryInterface;
 use App\Request;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
+use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 class FlyerTest extends TestCase
 {
     const BASE_URL = 'http://some.com';
+
+    const EXISTING_USER_NAME = 'some-existed-user';
 
     public function setUp()
     {
@@ -58,16 +68,16 @@ class FlyerTest extends TestCase
         self::assertSame([
             [
                 'flyerID' => 1,
-                'name' => '2',
-                'storeName' => '3',
+                'name' => 2,
+                'storeName' => 3,
                 'dateValid' => '2000-01-01',
                 'dateExpired' => '2001-01-01',
                 'pageCount' => 4,
             ],
             [
                 'flyerID' => 5,
-                'name' => '6',
-                'storeName' => '7',
+                'name' => 6,
+                'storeName' => 7,
                 'dateValid' => '2000-02-02',
                 'dateExpired' => '2001-02-02',
                 'pageCount' => 8,
@@ -107,8 +117,8 @@ class FlyerTest extends TestCase
         self::assertSame(200, $response->getStatus());
         self::assertSame([
             'flyerID' => 5,
-            'name' => '6',
-            'storeName' => '7',
+            'name' => 6,
+            'storeName' => 7,
             'dateValid' => '2000-01-01',
             'dateExpired' => '2001-01-01',
             'pageCount' => 8,
@@ -123,29 +133,113 @@ class FlyerTest extends TestCase
         // GIVEN
         $flyerRepository = self::getMockBuilder(FlyerRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods([])
+            ->setMethods(['save'])
             ->getMockForAbstractClass();
+        $flyerRepository->expects(self::never())->method('save');
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode('not-existed-user:123')]);
         $response = $app->dispatch($request);
 
         // THEN
         self::assertSame(403, $response->getStatus());
     }
 
+    public function dataProvider_testCreate_invalidRequestParams()
+    {
+        return [
+            [
+                [],
+                [
+                    'name' => ['Field is required.'],
+                    'storeName' => ['Field is required.'],
+                    'dateValid' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
+                    'pageCount' => ['Field is required.']
+                ]
+            ],
+            [
+                [
+                    'name' => 1,
+                    'storeName' => 2,
+                    'dateValid' => 'b',
+                    'dateExpired' => 'c',
+                    'pageCount' => 'd'
+                ],
+                [
+                    'pageCount' => ['Has to be integer.'],
+                    'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test successful invalid request params
+     *
+     * @dataProvider dataProvider_testCreate_invalidRequestParams
+     */
+    public function testCreate_invalidRequestParams($postData, $expectedValidationErrors)
+    {
+        // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::never())->method('save');
+        $app = $this->initApplication($flyerRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode(self::EXISTING_USER_NAME. ':123')]);
+        $request->setPostData($postData);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'errors' => $expectedValidationErrors
+        ], json_decode($response->getBody(), true));
+    }
+
     /**
      * Test successful fayer creation
      */
-    public function testCreate_auth()
+    public function testCreate_success()
     {
         // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::once())->method('save');
+        $app = $this->initApplication($flyerRepository);
 
         // WHEN
+        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode(self::EXISTING_USER_NAME. ':123')]);
+        $request->setPostData([
+            'name' => '6',
+            'storeName' => '7',
+            'dateValid' => '2000-01-01',
+            'dateExpired' => '2001-01-01',
+            'pageCount' => 8,
+        ]);
+        $response = $app->dispatch($request);
 
         // THEN
-        // self::assertSame(201, $response->getStatus());
+        self::assertSame(201, $response->getStatus());
+        self::assertSame([
+            'flyerID' => null, // not updated because test mocks repository save method
+            'name' => '6',
+            'storeName' => '7',
+            'dateValid' => '2000-01-01',
+            'dateExpired' => '2001-01-01',
+            'pageCount' => 8,
+        ], json_decode($response->getBody(), true));
     }
 
     /**
@@ -171,7 +265,7 @@ class FlyerTest extends TestCase
     /**
      * Test successful fayer update
      */
-    public function testUpdate_auth()
+    public function testUpdate_success()
     {
         // GIVEN
 
@@ -204,7 +298,7 @@ class FlyerTest extends TestCase
     /**
      * Test successful fayer delete
      */
-    public function testDelete_auth()
+    public function testDelete_success()
     {
         // GIVEN
 
@@ -214,10 +308,18 @@ class FlyerTest extends TestCase
         // self::assertSame(204, $response->getStatus());
     }
 
-    protected function initApplication(FlyerRepositoryInterface $flyerRepository, array $options = [])
-    {
+    protected function initApplication(
+        FlyerRepositoryInterface $flyerRepository,
+        array $options = []
+    ){
         $serviceContainer = new ServiceContainer();
         $serviceContainer->addServices(\App\Service\Flyer::ID, new \App\Service\Flyer($flyerRepository));
+
+        // stub User repository with some existed users to be able to login with that user name
+        $userRepository = new UserRepositoryStub();
+        $userRepository->setFindUserByCredentialsData([new User(self::EXISTING_USER_NAME)]);
+        $serviceContainer->addServices(\App\Service\Auth::ID, new \App\Service\Auth($userRepository));
+
         $evnVariables = !empty($options['envVariables']) ? $options['envVariables'] : [];
         $app = new App(
             $serviceContainer,

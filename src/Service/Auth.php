@@ -72,14 +72,14 @@ class Auth
         }
 
         // check Authorization token
-        $decoded = base64_decode($token);
+        $decoded = base64_decode($token[1]);
         list($username, $pass) = explode(':', $decoded);
         $user = $this->findUserByCredentials($username, $pass);
         if (!$user) {
             return $this->authenticated =false;
         }
 
-        $this->authenticated = $user;
+        return $this->authenticated = $user;
     }
 
     /**

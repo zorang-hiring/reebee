@@ -17,4 +17,9 @@ interface FlyerRepositoryInterface
      * @return Flyer
      */
     public function findOne($id);
+
+    /**
+     * @param Flyer $flyer
+     */
+    public function save(Flyer $flyer);
 }

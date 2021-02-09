@@ -61,8 +61,8 @@ class UserTest extends TestCase
         self::assertSame(400, $response->getStatus());
         self::assertSame(json_encode([
             'errors' => [
-                'username' => 'Has to be between 0 and 255 characters.',
-                'password' => 'Has to be between 3 and 20 characters.'
+                'username' => ['Has to be between 0 and 255 characters.'],
+                'password' => ['Has to be between 3 and 20 characters.']
             ]
         ]), $response->getBody());
     }
@@ -103,7 +103,7 @@ class UserTest extends TestCase
         self::assertSame(400, $response->getStatus());
         self::assertSame(json_encode([
             'errors' => [
-                'username' => 'Username already exists.'
+                'username' => ['Username already exists.']
             ]
         ]), $response->getBody());
     }
