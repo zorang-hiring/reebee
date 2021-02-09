@@ -19,7 +19,7 @@ final class RequestTest extends TestCase
 
     public function testFilled()
     {
-        $request = new Request(Request::METHOD_GET, 'http://some.url/a/b/?c=d');
+        $request = new Request(Request::METHOD_GET, '/a/b/?c=d');
 
         self::assertSame('/a/b/', $request->getPath());
         self::assertSame(['c' => 'd'], $request->getQuery());

@@ -26,10 +26,15 @@ class Request
      */
     protected $method;
 
-    public function __construct($method, $url)
+    /**
+     * Request constructor.
+     * @param string $method GET, POST, PUT, DELETE ...
+     * @param string $uri E.g.: '/a/b/?c=d'
+     */
+    public function __construct($method, $uri)
     {
-        $this->urlElements['path'] = parse_url($url, PHP_URL_PATH);
-        $this->urlElements['query'] = parse_url($url, PHP_URL_QUERY);
+        $this->urlElements['path'] = parse_url($uri, PHP_URL_PATH);
+        $this->urlElements['query'] = parse_url($uri, PHP_URL_QUERY);
         $this->method = $method;
     }
 
