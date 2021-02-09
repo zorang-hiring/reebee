@@ -91,6 +91,7 @@ class Dispatcher
     {
         $pathElements = explode('/', trim($this->request->getPath(), '/'));
         if (count($pathElements) <= 1) {
+            // if path contains only one level
             // standard reset actions
             switch ($this->request->getMethod()) {
                 case Request::METHOD_GET:
@@ -104,7 +105,8 @@ class Dispatcher
         }
 
         if (is_numeric($pathElements[1])) {
-            // we consider that url path is: "something/<number>"
+            // if path contains second level too
+            // we consider that path is: "something/<number>" according to REST standards
             $this->request->setPathParam('id', $pathElements[1]);
             // standard reset actions
             switch ($this->request->getMethod()) {
@@ -123,15 +125,12 @@ class Dispatcher
             }
         }
 
+        // custom action
         $action = str_replace(
             '-',
             '',
             ucwords(strtolower($pathElements[1]), '-')
         );
-
-        if ($action === '') {
-            return 'indexAction';
-        }
 
         return $action . 'Action';
     }
