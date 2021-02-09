@@ -43,14 +43,16 @@ class App
         $response = $this->dispatch($request);
 
         // remove any previously printed string which can break json etc.
-        ob_clean();
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
 
         // clean eventual previously added headers
         header_remove();
 
         // send headers
-         header("Access-Control-Allow-Origin: *");
-         header("Cache-Control: No-Cache");
+        header("Access-Control-Allow-Origin: *");
+        header("Cache-Control: No-Cache");
         if ($response instanceof ResponseJson) {
             header("Content-Type: application/json; charset=utf-8");
             header("Accept: application/json");

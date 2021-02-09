@@ -9,6 +9,3 @@
 //printf('{"hello":"%s"}', $databaseTest[0]->name);
 
 require('../app/bootstrap.php');
-//
-//$bootstrapPath = realpath('./../app/bootstrap.php');
-//var_dump($bootstrapPath);
