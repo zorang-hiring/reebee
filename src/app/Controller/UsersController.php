@@ -19,7 +19,10 @@ class UsersController extends AbstractController
     public function postAction(Request $request)
     {
         if (!$this->getAuthentication()->isAllowedToCreateUsers($request)) {
-            return $this->newResponseJson('', 401);
+            return $this->newResponseJson([
+                'status' => 'ERROR',
+                'errors' => 'Client is not authorised.'
+            ], 401);
         }
 
         /** @var User $userService */

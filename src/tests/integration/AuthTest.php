@@ -64,6 +64,7 @@ class AuthTest extends TestCase
         // THEN
         self::assertSame(200, $response->getStatus());
         self::assertSame(json_encode([
+            'status' => 'OK',
             'token' => base64_encode('bob:123')
         ]), $response->getBody());
     }

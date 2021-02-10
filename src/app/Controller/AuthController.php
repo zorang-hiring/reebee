@@ -14,15 +14,24 @@ class AuthController extends AbstractController
     public function postAction(Request $request)
     {
         if (!$request->isPost()) {
-            $this->newResponseJson('', 405);
+            $this->newResponseJson(
+                ['status'=>'error', 'message' => 'method not allowed'],
+                405
+            );
         }
 
         /** @var Auth $authService */
         $authService = $this->services->get(Auth::ID);
 
-        if ($user = $authService->findUserByCredentials($request, $request->getData()['password'])) {
+        $rData = $request->getData();
+
+        if ($user = $authService->findUserByCredentials(
+            $rData['username'] ?: null,
+            $rData['password'] ?: null
+        )) {
             return $this->newResponseJson([
-                'token' => $authService->generateBasicToken($user, $request->getData()['password'])
+                'status' => 'OK',
+                'token' => $authService->generateBasicToken($user, $rData['password'])
             ], 200);
         }
 

@@ -33,7 +33,10 @@ class UserTest extends TestCase
 
         // THEN
         self::assertSame(401, $response->getStatus());
-        self::assertSame('', $response->getBody());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => 'Client is not authorised.'
+        ], json_decode($response->getBody(), true));
     }
 
     /**
