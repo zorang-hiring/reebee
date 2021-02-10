@@ -6,7 +6,7 @@
 ```
 cd src && php composer.phar install
 ```
-##### 2. In root directory run docker 
+##### 2. Go back to root directory and execute 
 ```
 docker-compose -f docker/docker-compose.yml --env-file docker/sample.env up --build
 ```
