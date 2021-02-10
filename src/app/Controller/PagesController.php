@@ -42,7 +42,7 @@ class PagesController extends AbstractController
 
         $page = new \App\Entity\Page();
         $this->services->get(Page::ID)->save(
-            $form->fillFlyer($page)
+            $form->fillPage($page)
         );
 
         return $this->getResponseJson200($page);
@@ -73,7 +73,7 @@ class PagesController extends AbstractController
         }
 
         $this->services->get(Page::ID)->save(
-            $form->fillFlyer($page)
+            $form->fillPage($page)
         );
 
         return $this->getResponseJson200(null, 'Item updated.');
