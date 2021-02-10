@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Repository\FlyerRepositoryInterface;
 use App\Repository\PageRepositoryInterface;
 
 class Page
@@ -15,7 +14,7 @@ class Page
      */
     protected $pageRepository;
 
-    public function __construct(FlyerRepositoryInterface $pageRepository)
+    public function __construct(PageRepositoryInterface $pageRepository)
     {
         $this->pageRepository = $pageRepository;
     }

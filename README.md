@@ -18,6 +18,7 @@ cd src && php composer.phar watch
 ## todo
 - check and set app to utc
 - page and flyer indentifiers make guid
+- get all pages - order by page number
 
 ## API docs
 [http://localhost:8080/api-ui/](http://localhost:8080/api-ui/)

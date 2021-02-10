@@ -73,7 +73,7 @@ class PageTest extends TestCase
                     ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-02-02 00:00:00'))
                     ->setPageNumber(8)
             ]);
-            
+
         $flyerRepository = self::getMockBuilder(FlyerRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['findOne'])
@@ -108,13 +108,82 @@ class PageTest extends TestCase
         ], json_decode($response->getBody(), true));
     }
 
+    /**
+     * Test get one page (anyone) - not found
+     */
+    public function testGetOne_notFound()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['find'])
+            ->getMock();
+        $pageRepository->expects(self::once())
+            ->method('find')
+            ->with(5)
+            ->willReturn(null);
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_GET,  '/pages/5');
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => ['Page not found.']
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
+     * Test get one page (anyone) - found
+     */
+    public function testGetOneById()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['find'])
+            ->getMock();
+        $pageRepository->expects(self::once())
+            ->method('find')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-01-01 00:00:00'))
+                    ->setPageNumber(8)
+            );
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_GET,  '/pages/5');
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(200, $response->getStatus());
+        self::assertSame([
+            'status' => 'OK',
+            'data' => [
+                'pageID' => 5,
+                'dateValid' => '2000-01-01',
+                'dateExpired' => '2001-01-01',
+                'pageNumber' => 8,
+            ]
+        ], json_decode($response->getBody(), true));
+    }
+
     protected function initApplication(
-        FlyerRepositoryInterface $flyerRepository,
+        FlyerRepositoryInterface $flyerRepository = null,
         PageRepository $pageRepository = null,
         array $options = []
     ){
         $serviceContainer = new ServiceContainer();
-        $serviceContainer->addServices(\App\Service\Flyer::ID, new \App\Service\Flyer($flyerRepository));
+        if ($flyerRepository) {
+            $serviceContainer->addServices(\App\Service\Flyer::ID, new \App\Service\Flyer($flyerRepository));
+        }
         if ($pageRepository) {
             $serviceContainer->addServices(\App\Service\Page::ID, new \App\Service\Page($pageRepository));
         }
