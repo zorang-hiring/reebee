@@ -423,6 +423,86 @@ class PageTest extends AbstractTestCase
         self::assertSame(['status' => 'OK', 'message' => 'Item updated.'], json_decode($response->getBody(), true));
     }
 
+    /**
+     * Test that page can not be deleted by unauthenticated user
+     */
+    public function testDelete_noAuth()
+    {
+        $this->_testNoAuth(
+            new Request(Request::METHOD_DELETE,  '/pages/5')
+        );
+    }
+
+    /**
+     * Test delete for non existed page
+     */
+    public function testDelete_noPage()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['remove', 'findOne'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('findOne')
+            ->with(3)
+            ->willReturn(null);
+        $pageRepository->expects(self::never())->method('remove');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_DELETE,  '/pages/3');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => 'No such page.'
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
+     * Test successful page delete
+     */
+    public function testDelete_success()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['remove', 'findOne'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            );
+        $pageRepository->expects(self::once())
+            ->method('remove')
+            ->with(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            )
+        ;
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_DELETE,  '/pages/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(200, $response->getStatus());
+        self::assertSame(['status' => 'OK', 'message' => 'Item deleted.'], json_decode($response->getBody(), true));
+    }
+
     protected function _testNoAuth(Request $request)
     {
         // GIVEN

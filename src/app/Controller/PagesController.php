@@ -3,15 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\FlyerCreateForm;
 use App\Form\FlyerSaveForm;
-use App\Form\FlyerUpdateForm;
 use App\Form\PageCreateForm;
 use App\Form\PageUpdateForm;
 use App\Request;
-use App\Service\Flyer;
 use App\Service\Page;
-use OpenApi\Annotations as OA;
 
 class PagesController extends AbstractController
 {
@@ -72,22 +68,22 @@ class PagesController extends AbstractController
 
         return $this->getResponseJson200(null, 'Item updated.');
     }
-//
-//    public function deleteAction(Request $request)
-//    {
-//        if (!$this->isAuthenticatedBasic($request)) {
-//            return $this->getResponseJson403();
-//        }
-//
-//        $flyer = $this->getFlyerById($request->getPathParam('id'));
-//        if (!$flyer) {
-//            return $this->getResponseJson400('No such flyer.');
-//        }
-//
-//        $this->services->get(Flyer::ID)->remove($flyer);
-//
-//        return $this->getResponseJson200(null, 'Item deleted.');
-//    }
+
+    public function deleteAction(Request $request)
+    {
+        if (!$this->isAuthenticatedBasic($request)) {
+            return $this->getResponseJson403();
+        }
+
+        $page = $this->getPageById($request->getPathParam('id'));
+        if (!$page) {
+            return $this->getResponseJson400('No such page.');
+        }
+
+        $this->services->get(Page::ID)->remove($page);
+
+        return $this->getResponseJson200(null, 'Item deleted.');
+    }
 
     /**
      * @param $id
