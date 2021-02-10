@@ -10,22 +10,12 @@ class FlyerUpdateForm extends AbstractFlyerForm
 {
     public function isValid()
     {         
-        foreach (['name', 'storeName', 'dateValid', 'dateExpired', 'pageCount'] as $field) {
+        foreach (['name', 'storeName', 'dateValid', 'dateExpired'] as $field) {
             if (
                 $this->fields{$field} !== false
                 && strlen((string) $this->fields{$field}) === 0
             ) {
                 $this->addError($field, 'Field can not be empty.');
-            }
-        }
-
-        // check integers
-        foreach (['pageCount'] as $field) {
-            if (
-                $this->fields{$field} !== false
-                && !is_numeric($this->fields{$field})
-            ) {
-                $this->addError($field, 'Has to be integer.');
             }
         }
         

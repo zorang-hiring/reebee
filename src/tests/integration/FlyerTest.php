@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\App;
+use App\Entity\Page;
 use App\Entity\User;
 use App\Repository\FlyerRepository;
 use App\Repository\FlyerRepositoryInterface;
@@ -36,14 +37,15 @@ class FlyerTest extends TestCase
                     ->setStoreName(3)
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
                     ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-01-01 00:00:00'))
-                    ->setPageCount(4),
+                    ->addPage(new Page()),
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
                     ->setName(6)
                     ->setStoreName(7)
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-02-02 00:00:00'))
                     ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-02-02 00:00:00'))
-                    ->setPageCount(8)
+                    ->addPage(new Page())
+                    ->addPage(new Page())
             ]);
         $app = $this->initApplication($flyerRepository);
 
@@ -62,7 +64,7 @@ class FlyerTest extends TestCase
                     'storeName' => 3,
                     'dateValid' => '2000-01-01',
                     'dateExpired' => '2001-01-01',
-                    'pageCount' => 4,
+                    'pageCount' => 1,
                 ],
                 [
                     'flyerID' => 5,
@@ -70,7 +72,7 @@ class FlyerTest extends TestCase
                     'storeName' => 7,
                     'dateValid' => '2000-02-02',
                     'dateExpired' => '2001-02-02',
-                    'pageCount' => 8,
+                    'pageCount' => 2,
                 ]
             ]
         ], json_decode($response->getBody(), true));
@@ -124,7 +126,7 @@ class FlyerTest extends TestCase
                     ->setStoreName(7)
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
                     ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-01-01 00:00:00'))
-                    ->setPageCount(8)
+                    ->addPage(new Page())
             );
         $app = $this->initApplication($flyerRepository);
 
@@ -142,7 +144,7 @@ class FlyerTest extends TestCase
                 'storeName' => 7,
                 'dateValid' => '2000-01-01',
                 'dateExpired' => '2001-01-01',
-                'pageCount' => 8,
+                'pageCount' => 1,
             ]
         ], json_decode($response->getBody(), true));
     }
@@ -167,7 +169,6 @@ class FlyerTest extends TestCase
                     'storeName' => ['Field is required.'],
                     'dateValid' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
                     'dateExpired' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
-                    'pageCount' => ['Field is required.']
                 ]
             ],
             [
@@ -176,10 +177,8 @@ class FlyerTest extends TestCase
                     'storeName' => 2,
                     'dateValid' => 'b',
                     'dateExpired' => 'c',
-                    'pageCount' => 'd'
                 ],
                 [
-                    'pageCount' => ['Has to be integer.'],
                     'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
                     'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
                 ]
@@ -236,8 +235,7 @@ class FlyerTest extends TestCase
             'name' => '6',
             'storeName' => '7',
             'dateValid' => '2000-01-01',
-            'dateExpired' => '2001-01-01',
-            'pageCount' => 8,
+            'dateExpired' => '2001-01-01'
         ]);
         $response = $app->dispatch($request);
 
@@ -251,7 +249,7 @@ class FlyerTest extends TestCase
                 'storeName' => '7',
                 'dateValid' => '2000-01-01',
                 'dateExpired' => '2001-01-01',
-                'pageCount' => 8,
+                'pageCount' => 0,
             ]
         ], json_decode($response->getBody(), true));
     }
@@ -291,7 +289,6 @@ class FlyerTest extends TestCase
             'storeName' => '7',
             'dateValid' => '2000-01-01',
             'dateExpired' => '2001-01-01',
-            'pageCount' => 8,
         ]);
         $response = $app->dispatch($request);
 
@@ -319,11 +316,9 @@ class FlyerTest extends TestCase
                     'storeName' => '',
                     'dateValid' => 'b',
                     'dateExpired' => 'c',
-                    'pageCount' => 'd'
                 ],
                 [
                     'storeName' => ['Field can not be empty.'],
-                    'pageCount' => ['Has to be integer.'],
                     'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
                     'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
                 ]
@@ -349,7 +344,7 @@ class FlyerTest extends TestCase
             ->willReturn(
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
-                    ->setPageCount(41)
+                    ->addPage(new Page())
                     ->setStoreName('old storeName')
                     ->setName('old name')
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
@@ -388,7 +383,6 @@ class FlyerTest extends TestCase
             ->willReturn(
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
-                    ->setPageCount(41)
                     ->setStoreName('old storeName')
                     ->setName('old name')
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
@@ -399,7 +393,6 @@ class FlyerTest extends TestCase
             ->with(
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
-                    ->setPageCount(42)
                     ->setStoreName('new storeName')
                     ->setName('new name')
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-01 00:00:00'))
@@ -412,7 +405,7 @@ class FlyerTest extends TestCase
         $request = new Request(Request::METHOD_PATCH,  '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData([
-            'pageCount' => 42,
+            'pageCount' => 0,
             'storeName' => 'new storeName',
             'name' => 'new name',
             'dateValid' => '2010-01-01',
@@ -481,7 +474,6 @@ class FlyerTest extends TestCase
             ->willReturn(
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
-                    ->setPageCount(41)
                     ->setStoreName('storeName')
                     ->setName('name')
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
@@ -492,7 +484,6 @@ class FlyerTest extends TestCase
             ->with(
                 (new \App\Entity\Flyer())
                     ->setFlyerID(5)
-                    ->setPageCount(41)
                     ->setStoreName('storeName')
                     ->setName('name')
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))

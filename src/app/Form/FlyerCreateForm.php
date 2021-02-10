@@ -8,16 +8,9 @@ class FlyerCreateForm extends AbstractFlyerForm
     public function isValid()
     {
         // required fields
-        foreach (['name', 'storeName', 'dateValid', 'dateExpired', 'pageCount'] as $field) {
+        foreach (['name', 'storeName', 'dateValid', 'dateExpired'] as $field) {
             if ($this->fields{$field} === false || strlen((string) $this->fields{$field}) === 0) {
                 $this->addError($field, 'Field is required.');
-            }
-        }
-
-        // check integers
-        foreach (['pageCount'] as $field) {
-            if ($this->fields{$field} !== false && !is_numeric($this->fields{$field})) {
-                $this->addError($field, 'Has to be integer.');
             }
         }
 

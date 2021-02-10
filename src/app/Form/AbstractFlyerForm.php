@@ -11,8 +11,7 @@ abstract class AbstractFlyerForm extends AbstractForm
         'name' => false,
         'storeName' => false,
         'dateValid' => false,
-        'dateExpired' => false,
-        'pageCount' => false
+        'dateExpired' => false
     ];
 
     public function __construct(array $data)
@@ -41,9 +40,6 @@ abstract class AbstractFlyerForm extends AbstractForm
          $flyer->setDateExpired(
              \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateExpired'] . ' 00:00:00')
          );
-        }
-        if ($this->fields['pageCount'] !== false) {
-          $flyer->setPageCount($this->fields['pageCount']);
         }
         return $flyer;
     }

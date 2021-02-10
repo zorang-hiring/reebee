@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,26 +57,15 @@ class Flyer implements \JsonSerializable
     protected $dateExpired;
 
     /**
-     * @todo remove since pages will be read automatically
-     *
-     * The number of pages in the flyer
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     *
-     * @var Integer
-     */
-    protected $pageCount;
-
-    /**
      * @ORM\OneToMany(targetEntity="Page", mappedBy="flyer")
      *
      * @var Page[]
      */
     protected $pages;
 
-    protected function __construct()
+    public function __construct()
     {
-        $this->pages = [];
+        $this->pages = new ArrayCollection();
     }
 
     /**
@@ -173,18 +163,24 @@ class Flyer implements \JsonSerializable
      */
     public function getPageCount()
     {
-        return $this->pageCount;
+        return count($this->pages);
     }
 
     /**
-     * @todo remove since pages will be read automatically
-     *
-     * @param int $pageCount
+     * @return ArrayCollection|Page[]
+     */
+    public function getPages()
+    {
+        return $this->pages;
+    }
+
+    /**
+     * @param Page $page
      * @return self
      */
-    public function setPageCount($pageCount): Flyer
+    public function addPage(Page $page)
     {
-        $this->pageCount = $pageCount;
+        $this->pages->add($page);
         return $this;
     }
 
