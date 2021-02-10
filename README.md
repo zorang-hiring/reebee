@@ -18,8 +18,8 @@ cd src && php composer.phar watch
 ## todo
 
 must:
-- page and flyer indentifiers make guid
-- get all pages - order by page number
+- page and flyer indentifiers make guid (done)
+- get all pages - order by page number (done)
 
 maybe:
 - make possible to update page numeric order?

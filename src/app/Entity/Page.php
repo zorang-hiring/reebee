@@ -12,10 +12,10 @@ class Page implements \JsonSerializable
 {
     /**
      * @ORM\Id
-     * @ORM\Column (type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      *
-     * @var integer
+     * @var string
      */
     protected $pageID;
 
@@ -55,7 +55,7 @@ class Page implements \JsonSerializable
     protected $pageNumber;
 
     /**
-     * @return int
+     * @return string
      */
     public function getPageID()
     {
@@ -63,7 +63,7 @@ class Page implements \JsonSerializable
     }
 
     /**
-     * @param int $pageID
+     * @param string $pageID
      * @return self
      */
     public function setPageID($pageID)

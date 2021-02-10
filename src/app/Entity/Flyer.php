@@ -13,10 +13,10 @@ class Flyer implements \JsonSerializable
 {
     /**
      * @ORM\Id
-     * @ORM\Column (type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      *
-     * @var Integer
+     * @var string
      */
     protected $flyerID;
 
@@ -70,7 +70,7 @@ class Flyer implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFlyerID()
     {
@@ -78,7 +78,7 @@ class Flyer implements \JsonSerializable
     }
 
     /**
-     * @param mixed $flyerID
+     * @param string $flyerID
      * @return self
      */
     public function setFlyerID($flyerID)
