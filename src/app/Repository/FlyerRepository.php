@@ -17,8 +17,8 @@ class FlyerRepository extends EntityRepository implements FlyerRepositoryInterfa
         return $this->getEntityManager()->createQueryBuilder('f')
             ->select(['f'])
             ->from(Flyer::class, 'f')
-            ->where('f.dateValid >= :now')
-            ->andWhere('f.dateExpired < :now')
+            ->where('f.dateValid <= :now')
+            ->andWhere('f.dateExpired > :now')
             ->setParameter('now', Carbon::now())
             ->getQuery()
             ->getResult();
