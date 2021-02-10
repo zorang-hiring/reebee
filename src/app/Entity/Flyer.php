@@ -67,10 +67,16 @@ class Flyer implements \JsonSerializable
     protected $pageCount;
 
     /**
-     * this is relation 1:n !
-     * @var
+     * @ORM\OneToMany(targetEntity="Page", mappedBy="flyer")
+     *
+     * @var Page[]
      */
     protected $pages;
+
+    protected function __construct()
+    {
+        $this->pages = [];
+    }
 
     /**
      * @return mixed

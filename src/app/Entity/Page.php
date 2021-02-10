@@ -20,6 +20,14 @@ class Page implements \JsonSerializable
     protected $pageID;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Flyer", inversedBy="pages")
+     * @ORM\JoinColumn(name="flyerID", referencedColumnName="flyerID")
+     *
+     * @var Flyer
+     */
+    protected $flyer;
+
+    /**
      * The date page becomes valid
      *
      * @ORM\Column(type="date", nullable=false)

@@ -8,14 +8,17 @@ require(__DIR__ . '/../bootstrap-doctrine.php');
 // repositories
 $userRepository = \GetEntityManager::getEm()->getRepository(\App\Entity\User::class);
 $flyerRepository = \GetEntityManager::getEm()->getRepository(\App\Entity\Flyer::class);
+$pageRepository = \GetEntityManager::getEm()->getRepository(\App\Entity\Page::class);
 
 // service container init
 use App\Service\Auth;
 use App\Service\Flyer;
+use App\Service\Page;
 use App\Service\User;
 $servicesContainer = new ServiceContainer();
 $servicesContainer->addServices(Auth::ID, new Auth($userRepository));
 $servicesContainer->addServices(Flyer::ID, new Flyer($flyerRepository));
+$servicesContainer->addServices(Page::ID, new Page($pageRepository));
 $servicesContainer->addServices(User::ID, new User($userRepository));
 
 // build request
