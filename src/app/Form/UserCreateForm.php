@@ -29,14 +29,16 @@ class UserCreateForm extends AbstractForm
 
     public function isValid()
     {
-        if (strlen($this->username) === 0 || strlen($this->username) > 255) {
+        $username = (string) $this->username;
+        $password = (string) $this->password;
+        if (strlen($username) === 0 || strlen($username) > 255) {
             $this->addError('username', 'Has to be between 0 and 255 characters.');
         }
-        if (strlen($this->password) <= 3 || strlen($this->password) > 20) {
+        if (strlen($password) < 3 || strlen($password) > 20) {
             $this->addError('password', 'Has to be between 3 and 20 characters.');
         }
         if (empty($this->errors['username'])) {
-            if ($this->userRepository->findOneByUsername($this->username)){
+            if ($this->userRepository->findOneByUsername($username)){
                 $this->addError('username', 'Username already exists.');
             }
         }

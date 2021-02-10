@@ -23,7 +23,7 @@ class Flyer implements \JsonSerializable
     /**
      * The customer's description of the flyer
      *
-     * @ORM\Column(type="string", unique=true, nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
@@ -32,7 +32,7 @@ class Flyer implements \JsonSerializable
     /**
      * The name of the customer's business. (This is reused *a lot*).
      *
-     * @ORM\Column(type="string", unique=true, nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
@@ -41,7 +41,7 @@ class Flyer implements \JsonSerializable
     /**
      * The date flyer becomes valid
      *
-     * @ORM\Column(type="date", unique=true, nullable=false)
+     * @ORM\Column(type="date", nullable=false)
      *
      * @var \DateTime
      */
@@ -50,7 +50,7 @@ class Flyer implements \JsonSerializable
     /**
      * The date that the flyer expires
      *
-     * @ORM\Column(type="date", unique=true, nullable=false)
+     * @ORM\Column(type="date", nullable=false)
      *
      * @var \DateTime
      */
@@ -61,7 +61,7 @@ class Flyer implements \JsonSerializable
      *
      * The number of pages in the flyer
      *
-     * @ORM\Column(type="integer", unique=true, nullable=false)
+     * @ORM\Column(type="integer", nullable=false)
      *
      * @var Integer
      */

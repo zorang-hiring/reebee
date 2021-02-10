@@ -104,9 +104,6 @@ class Auth
 
     public static function encryptPassword($password)
     {
-        return password_hash(
-            $password . App::getEnv(self::APP_SECRET_KEY),
-            PASSWORD_DEFAULT
-        );
+        return md5($password . App::getEnv(self::APP_SECRET_KEY));
     }
 }
