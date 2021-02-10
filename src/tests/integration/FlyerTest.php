@@ -253,7 +253,7 @@ class FlyerTest extends TestCase
         $response = $app->dispatch($request);
 
         // THEN
-        self::assertSame(201, $response->getStatus());
+        self::assertSame(200, $response->getStatus());
         self::assertSame([
             'status' => 'OK',
             'data' => [
@@ -432,7 +432,7 @@ class FlyerTest extends TestCase
         $response = $app->dispatch($request);
 
         // THEN
-        self::assertSame(204, $response->getStatus());
+        self::assertSame(200, $response->getStatus());
         self::assertSame(['status' => 'OK', 'message' => 'Item updated.'], json_decode($response->getBody(), true));
     }
 
@@ -518,7 +518,7 @@ class FlyerTest extends TestCase
         $response = $app->dispatch($request);
 
         // THEN
-        self::assertSame(204, $response->getStatus());
+        self::assertSame(200, $response->getStatus());
         self::assertSame(['status' => 'OK', 'message' => 'Item deleted.'], json_decode($response->getBody(), true));
     }
 

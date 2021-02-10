@@ -59,7 +59,7 @@ class FlyersController extends AbstractController
             $form->fillFlyer($flyer)
         );
 
-        return $this->getResponseJson201($flyer);
+        return $this->getResponseJson200($flyer);
     }
 
     public function patchAction(Request $request)
@@ -82,7 +82,7 @@ class FlyersController extends AbstractController
             $form->fillFlyer($flyer)
         );
 
-        return $this->getResponseJson204('Item updated.');
+        return $this->getResponseJson200(null, 'Item updated.');
     }
 
     public function deleteAction(Request $request)
@@ -98,7 +98,7 @@ class FlyersController extends AbstractController
 
         $this->services->get(Flyer::ID)->remove($flyer);
 
-        return $this->getResponseJson204('Item deleted.');
+        return $this->getResponseJson200(null, 'Item deleted.');
     }
 
     /**

@@ -142,7 +142,7 @@ class UserTest extends TestCase
         $savedPassword = $this->getProtectedProperty($savedDbData[0], 'password');
         self::assertNotEmpty($savedPassword, 'password should be randomly encrypted');
         self::assertNotSame('somePassword', $savedPassword, 'password should be encrypted');
-        self::assertSame(201, $response->getStatus());
+        self::assertSame(200, $response->getStatus());
         self::assertSame(json_encode([
             'status' => 'OK',
             'data' => [

@@ -50,19 +50,16 @@ abstract class AbstractController
         return !!$this->getAuthentication()->authenticateBasic($request);
     }
 
-    protected function getResponseJson200($data)
+    protected function getResponseJson200($data, $message = null)
     {
-        return $this->newResponseJson(['status' => 'OK', 'data' => $data], 200);
-    }
-
-    protected function getResponseJson201($data)
-    {
-        return $this->newResponseJson(['status' => 'OK', 'data' => $data], 201);
-    }
-
-    protected function getResponseJson204($message)
-    {
-        return $this->newResponseJson(['status' => 'OK', 'message' => $message], 204);
+        $response = ['status' => 'OK'];
+        if ($data !== null) {
+            $response['data'] = $data;
+        }
+        if ($message) {
+            $response['message'] = $message;
+        }
+        return $this->newResponseJson($response, 200);
     }
 
     protected function getResponseJson400($errors)

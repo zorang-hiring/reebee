@@ -38,6 +38,6 @@ class UsersController extends AbstractController
             $user = $form->fillUser(new \App\Entity\User(null))
         );
 
-        return $this->getResponseJson201($user);
+        return $this->getResponseJson200($user);
     }
 }
