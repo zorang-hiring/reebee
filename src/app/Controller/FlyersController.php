@@ -16,6 +16,8 @@ use OpenApi\Annotations as OA;
 class FlyersController extends AbstractController
 {
     /**
+     * API GET: /flyers
+     *
      * @OA\Get(
      *     path="/flyers",
      *     @OA\Response(
@@ -31,6 +33,9 @@ class FlyersController extends AbstractController
         );
     }
 
+    /**
+     * API GET: /flyers/<id>
+     */
     public function getAction(Request $request)
     {
         $flyer = $this->getFlyerById($request->getPathParam('id'));
@@ -42,6 +47,9 @@ class FlyersController extends AbstractController
         return $this->getResponseJson200($flyer);
     }
 
+    /**
+     * API GET: /flyers/<id>/pages
+     */
     public function getPagesAction(Request $request)
     {
         $flyer = $this->getFlyerById($request->getPathParam('id'));
@@ -53,6 +61,9 @@ class FlyersController extends AbstractController
         return $this->getResponseJson200($flyer->getPages());
     }
 
+    /**
+     * API POST: /flyers
+     */
     public function postAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
@@ -72,6 +83,9 @@ class FlyersController extends AbstractController
         return $this->getResponseJson200($flyer);
     }
 
+    /**
+     * API PATCH: /flyers/<id>
+     */
     public function patchAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
@@ -100,6 +114,9 @@ class FlyersController extends AbstractController
         return $this->getResponseJson200(null, 'Item updated.');
     }
 
+    /**
+     * API DELETE: /flyers/<id>
+     */
     public function deleteAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {

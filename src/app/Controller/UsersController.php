@@ -13,6 +13,8 @@ class UsersController extends AbstractController
     /**
      * Create new user
      *
+     * API POST: /users
+     *
      * @param Request $request
      * @return Response
      */

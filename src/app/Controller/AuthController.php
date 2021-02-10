@@ -11,6 +11,9 @@ use App\Service\User;
 
 class AuthController extends AbstractController
 {
+    /**
+     * API GET: /auth
+     */
     public function postAction(Request $request)
     {
         if (!$request->isPost()) {

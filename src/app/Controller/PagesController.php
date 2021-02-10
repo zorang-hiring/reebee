@@ -12,6 +12,9 @@ use App\Service\Page;
 
 class PagesController extends AbstractController
 {
+    /**
+     * API GET: /pages/<id>
+     */
     public function getAction(Request $request)
     {
         $page = $this->getPageById($request->getPathParam('id'));
@@ -23,6 +26,9 @@ class PagesController extends AbstractController
         return $this->getResponseJson200($page);
     }
 
+    /**
+     * API POST: /pages
+     */
     public function postAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
@@ -42,6 +48,9 @@ class PagesController extends AbstractController
         return $this->getResponseJson200($page);
     }
 
+    /**
+     * API PATCH: /pages/<id>
+     */
     public function patchAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
@@ -70,6 +79,9 @@ class PagesController extends AbstractController
         return $this->getResponseJson200(null, 'Item updated.');
     }
 
+    /**
+     * API DELETE: /pages/<id>
+     */
     public function deleteAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
