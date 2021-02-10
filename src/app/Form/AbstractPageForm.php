@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\App;
+use App\Entity\Flyer;
 use App\Entity\Page;
 
 abstract class AbstractPageForm extends AbstractForm
@@ -22,24 +24,21 @@ abstract class AbstractPageForm extends AbstractForm
         }
     }
 
-//    public function fillFlyer(Flyer $flyer)
-//    {
-//        if ($this->fields['name'] !== false) {
-//            $flyer->setName($this->fields['name']);
-//        }
-//        if ($this->fields['storeName'] !== false) {
-//            $flyer->setStoreName($this->fields['storeName']);
-//        }
-//        if ($this->fields['dateValid'] !== false) {
-//          $flyer->setDateValid(
-//              \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateValid'] . ' 00:00:00')
-//          );
-//        }
-//        if ($this->fields['dateExpired'] !== false) {
-//         $flyer->setDateExpired(
-//             \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateExpired'] . ' 00:00:00')
-//         );
-//        }
-//        return $flyer;
-//    }
+    public function fillFlyer(Page $page)
+    {
+        if ($this->fields['flyerID'] !== false) {
+            $page->setFlyer(App::getEm()->getReference(Flyer::class, $this->fields['flyerID']));
+        }
+        if ($this->fields['dateValid'] !== false) {
+            $page->setDateValid(
+                \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateValid'] . ' 00:00:00')
+            );
+        }
+        if ($this->fields['dateExpired'] !== false) {
+            $page->setDateExpired(
+                \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateExpired'] . ' 00:00:00')
+            );
+        }
+        return $page;
+    }
 }

@@ -35,13 +35,13 @@ class PagesController extends AbstractController
         if (!$form->isValid()) {
             return $this->getResponseJson400($form->getErrors());
         }
-//
-//        $flyer = new \App\Entity\Flyer();
-//        $this->services->get(Flyer::ID)->save(
-//            $form->fillFlyer($flyer)
-//        );
-//
-//        return $this->getResponseJson200($flyer);
+
+        $page = new \App\Entity\Page();
+        $this->services->get(Page::ID)->save(
+            $form->fillFlyer($page)
+        );
+
+        return $this->getResponseJson200($page);
     }
 //
 //    public function patchAction(Request $request)

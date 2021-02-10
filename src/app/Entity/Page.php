@@ -21,7 +21,7 @@ class Page implements \JsonSerializable
 
     /**
      * @ORM\ManyToOne(targetEntity="Flyer", inversedBy="pages")
-     * @ORM\JoinColumn(name="flyerID", referencedColumnName="flyerID")
+     * @ORM\JoinColumn(name="flyerID", referencedColumnName="flyerID", nullable=false)
      *
      * @var Flyer
      */
@@ -123,6 +123,16 @@ class Page implements \JsonSerializable
     public function setDateExpired(\DateTime $dateExpired)
     {
         $this->dateExpired = $dateExpired;
+        return $this;
+    }
+
+    /**
+     * @param Flyer $flyer
+     * @return self
+     */
+    public function setFlyer(Flyer $flyer)
+    {
+        $this->flyer = $flyer;
         return $this;
     }
 

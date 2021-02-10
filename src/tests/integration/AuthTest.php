@@ -12,7 +12,6 @@ use App\Response;
 use App\Service\User;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
-use Tests\Integration\Stub\Repository\DbConnectorStub;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 class AuthTest extends TestCase

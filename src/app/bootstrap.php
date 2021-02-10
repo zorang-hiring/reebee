@@ -28,4 +28,5 @@ $request->setHeaders(getallheaders());
 
 // bootstrap app and print output
 $app = new App($servicesContainer, $_ENV);
+App::setEm(\GetEntityManager::getEm());
 $app->output($request);

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\App;
+use App\Entity\Flyer;
+use App\Entity\Page;
 use App\Entity\User;
 use App\Repository\FlyerRepository;
 use App\Repository\FlyerRepositoryInterface;
@@ -236,6 +238,43 @@ class PageTest extends AbstractTestCase
         self::assertSame([
             'status' => 'ERROR',
             'errors' => $expectedValidationErrors
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
+     * Test successful fayer creation
+     */
+    public function testCreate_success()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('save');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_POST,  '/pages');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setData([
+            'flyerID' => '6',
+            'dateValid' => '2000-01-01',
+            'dateExpired' => '2001-01-01'
+        ]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(200, $response->getStatus());
+        self::assertSame([
+            'status' => 'OK',
+            'data' => [
+                'pageID' => null, // not updated because test mocks repository save method
+                'dateValid' => '2000-01-01',
+                'dateExpired' => '2001-01-01',
+                'pageNumber' => null
+            ]
         ], json_decode($response->getBody(), true));
     }
 

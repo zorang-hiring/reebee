@@ -3,9 +3,16 @@ declare(strict_types=1);
 
 namespace App;
 
+use Doctrine\ORM\EntityManagerInterface;
+
 class App
 {
     protected static $envVariables;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected static $em;
 
     /**
      * @var ServiceContainer
@@ -66,5 +73,21 @@ class App
 
         // will assure nothing is added after
         exit();
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public static function getEm()
+    {
+        return self::$em;
+    }
+
+    /**
+     * @param EntityManagerInterface $em
+     */
+    public static function setEm(EntityManagerInterface $em)
+    {
+        self::$em = $em;
     }
 }
