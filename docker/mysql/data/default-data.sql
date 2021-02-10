@@ -1,7 +1,28 @@
-CREATE TABLE IF NOT EXISTS `sample_table` (
-    `id` int unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE flyers (
+  flyerID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  name VARCHAR(255) NOT NULL,
+  storeName VARCHAR(255) NOT NULL,
+  dateValid DATE NOT NULL,
+  dateExpired DATE NOT NULL,
+  PRIMARY KEY(flyerID)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-INSERT INTO `sample_table` (`name`) VALUES ('world');
+CREATE TABLE pages (
+  pageID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  dateValid DATE NOT NULL,
+  dateExpired DATE NOT NULL,
+  pageNumber INT NOT NULL,
+  flyerID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  INDEX IDX_2074E575F57921F4 (flyerID),
+  PRIMARY KEY(pageID)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  UNIQUE INDEX UNIQ_1483A5E9F85E0677 (username),
+  PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
+
+ALTER TABLE pages ADD CONSTRAINT FK_2074E575F57921F4 FOREIGN KEY (flyerID) REFERENCES flyers (flyerID);
