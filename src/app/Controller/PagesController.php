@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Form\FlyerCreateForm;
 use App\Form\FlyerSaveForm;
 use App\Form\FlyerUpdateForm;
+use App\Form\PageCreateForm;
 use App\Request;
 use App\Service\Flyer;
 use App\Service\Page;
@@ -24,16 +25,16 @@ class PagesController extends AbstractController
         return $this->getResponseJson200($page);
     }
 
-//    public function postAction(Request $request)
-//    {
-//        if (!$this->isAuthenticatedBasic($request)) {
-//            return $this->getResponseJson403();
-//        }
-//
-//        $form = new FlyerCreateForm($request->getData());
-//        if (!$form->isValid()) {
-//            return $this->getResponseJson400($form->getErrors());
-//        }
+    public function postAction(Request $request)
+    {
+        if (!$this->isAuthenticatedBasic($request)) {
+            return $this->getResponseJson403();
+        }
+
+        $form = new PageCreateForm($request->getData());
+        if (!$form->isValid()) {
+            return $this->getResponseJson400($form->getErrors());
+        }
 //
 //        $flyer = new \App\Entity\Flyer();
 //        $this->services->get(Flyer::ID)->save(
@@ -41,7 +42,7 @@ class PagesController extends AbstractController
 //        );
 //
 //        return $this->getResponseJson200($flyer);
-//    }
+    }
 //
 //    public function patchAction(Request $request)
 //    {

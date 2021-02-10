@@ -19,6 +19,7 @@ cd src && php composer.phar watch
 - check and set app to utc
 - page and flyer indentifiers make guid
 - get all pages - order by page number
+- make possible to update page numeric order?
 
 ## API docs
 [http://localhost:8080/api-ui/](http://localhost:8080/api-ui/)

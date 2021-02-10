@@ -14,7 +14,7 @@ use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
-class FlyerTest extends TestCase
+class FlyerTest extends AbstractTestCase
 {
     const EXISTING_USER_NAME = 'some-existed-user';
 
@@ -507,8 +507,10 @@ class FlyerTest extends TestCase
         // GIVEN
         $flyerRepository = self::getMockBuilder(FlyerRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods([])
+            ->setMethods(['save', 'remove'])
             ->getMockForAbstractClass();
+        $flyerRepository->expects(self::never())->method('save');
+        $flyerRepository->expects(self::never())->method('remove');
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
@@ -536,10 +538,5 @@ class FlyerTest extends TestCase
             $evnVariables
         );
         return $app;
-    }
-
-    protected function addBasicAuthHeader(Request $request, array $options)
-    {
-        $request->setHeaders(['Authorization' => 'Basic ' . base64_encode($options['user']. ':123')]);
     }
 }

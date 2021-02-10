@@ -8,8 +8,8 @@ use App\Entity\User;
 use App\Repository\FlyerRepository;
 use App\Repository\FlyerRepositoryInterface;
 use App\Repository\PageRepository;
+use App\Repository\PageRepositoryInterface;
 use App\Request;
-use App\Service\Flyer;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
@@ -19,7 +19,7 @@ use Tests\Integration\Stub\Repository\UserRepositoryStub;
 //- Require a User to use Basic Authentication to access the Create, Update, and Delete operations
 
 
-class PageTest extends TestCase
+class PageTest extends AbstractTestCase
 {
     const EXISTING_USER_NAME = 'some-existed-user';
 
@@ -175,9 +175,91 @@ class PageTest extends TestCase
         ], json_decode($response->getBody(), true));
     }
 
+    /**
+     * Test that page can not be created by unauthenticated user
+     */
+    public function testCreate_noAuth()
+    {
+        $this->_testNoAuth(
+            new Request(Request::METHOD_POST,  '/pages')
+        );
+    }
+
+    public function dataProvider_testCreate_invalidRequestParams()
+    {
+        return [
+            [
+                [],
+                [
+                    'flyerID' => ['Field is required.'],
+                    'dateValid' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Field is required.', 'Has to be date in the form YYYY-MM-DD.'],
+                ]
+            ],
+            [
+                [
+                    'flyerID' => 1,
+                    'dateValid' => 'b',
+                    'dateExpired' => 'c',
+                ],
+                [
+                    'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test create invalid request params
+     *
+     * @dataProvider dataProvider_testCreate_invalidRequestParams
+     */
+    public function testCreate_invalidRequestParams($postData, $expectedValidationErrors)
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::never())->method('save');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_POST,  '/pages');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setData($postData);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => $expectedValidationErrors
+        ], json_decode($response->getBody(), true));
+    }
+
+    protected function _testNoAuth(Request $request)
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'remove'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::never())->method('save');
+        $pageRepository->expects(self::never())->method('remove');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(403, $response->getStatus());
+    }
+
     protected function initApplication(
         FlyerRepositoryInterface $flyerRepository = null,
-        PageRepository $pageRepository = null,
+        PageRepositoryInterface $pageRepository = null,
         array $options = []
     ){
         $serviceContainer = new ServiceContainer();
