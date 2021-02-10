@@ -10,21 +10,10 @@ use App\Request;
 use App\Service\Flyer;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Info(title="Search API", version="1.0.0")
- */
 class FlyersController extends AbstractController
 {
     /**
      * API GET: /flyers
-     *
-     * @OA\Get(
-     *     path="/flyers",
-     *     @OA\Response(
-     *         response="200",
-     *         description="Get all"
-     *     )
-     * )
      */
     public function indexAction(Request $request)
     {
