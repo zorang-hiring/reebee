@@ -3,21 +3,20 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-class PageCreateForm extends AbstractPageForm
+class PageUpdateForm extends AbstractPageForm
 {
     /**
      * @var array
      */
     protected $fields = [
-        'flyerID' => false,
         'dateValid' => false,
         'dateExpired' => false
     ];
-
+    
     public function isValid()
     {
         // required fields
-        foreach (['flyerID', 'dateValid', 'dateExpired'] as $field) {
+        foreach (['dateValid', 'dateExpired'] as $field) {
             if ($this->fields{$field} === false || strlen((string) $this->fields{$field}) === 0) {
                 $this->addError($field, 'Field is required.');
             }

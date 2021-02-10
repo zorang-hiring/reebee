@@ -278,6 +278,151 @@ class PageTest extends AbstractTestCase
         ], json_decode($response->getBody(), true));
     }
 
+    /**
+     * Test that page can not be updated by unauthenticated user
+     */
+    public function testUpdate_noAuth()
+    {
+        $this->_testNoAuth(
+            new Request(Request::METHOD_PATCH,  '/pages/5')
+        );
+    }
+
+    /**
+     * Test update for non existed page
+     */
+    public function testUpdate_noPage()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'findOne'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('findOne')
+            ->with(3)
+            ->willReturn(null);
+        $pageRepository->expects(self::never())->method('save');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_PATCH,  '/pages/3');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setData([
+            'flyerID' => '6',
+            'dateValid' => '2000-01-01',
+            'dateExpired' => '2001-01-01',
+        ]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => 'no such page'
+        ], json_decode($response->getBody(), true));
+    }
+
+    public function dataProvider_testUpdate_invalidRequestParams()
+    {
+        return [
+            [
+                [
+                    'dateValid' => 'b',
+                    'dateExpired' => 'c',
+                ],
+                [
+                    'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
+                    'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test update invalid request params
+     *
+     * @dataProvider dataProvider_testUpdate_invalidRequestParams
+     */
+    public function testUpdate_invalidRequestParams($postData, $expectedValidationErrors)
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'findOne'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+            );
+        $pageRepository->expects(self::never())->method('save');
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_PATCH,  '/pages/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setData($postData);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => $expectedValidationErrors
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
+     * Test successful page update
+     */
+    public function testUpdate_success()
+    {
+        // GIVEN
+        $pageRepository = self::getMockBuilder(PageRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['save', 'findOne'])
+            ->getMockForAbstractClass();
+        $pageRepository->expects(self::once())
+            ->method('findOne')
+            ->with(5)
+            ->willReturn(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-02 00:00:00'))
+                    ->setPageNumber(7)
+            );
+        $pageRepository->expects(self::once())
+            ->method('save')
+            ->with(
+                (new \App\Entity\Page())
+                    ->setPageID(5)
+                    ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-01 00:00:00'))
+                    ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-02 00:00:00'))
+                    ->setPageNumber(7)
+            )
+        ;
+        $app = $this->initApplication(null, $pageRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_PATCH,  '/pages/5');
+        $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
+        $request->setData([
+            'dateValid' => '2010-01-01',
+            'dateExpired' => '2010-01-02',
+        ]);
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(200, $response->getStatus());
+        self::assertSame(['status' => 'OK', 'message' => 'Item updated.'], json_decode($response->getBody(), true));
+    }
+
     protected function _testNoAuth(Request $request)
     {
         // GIVEN

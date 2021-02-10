@@ -7,6 +7,7 @@ use App\Form\FlyerCreateForm;
 use App\Form\FlyerSaveForm;
 use App\Form\FlyerUpdateForm;
 use App\Form\PageCreateForm;
+use App\Form\PageUpdateForm;
 use App\Request;
 use App\Service\Flyer;
 use App\Service\Page;
@@ -43,34 +44,34 @@ class PagesController extends AbstractController
 
         return $this->getResponseJson200($page);
     }
-//
-//    public function patchAction(Request $request)
-//    {
-//        if (!$this->isAuthenticatedBasic($request)) {
-//            return $this->getResponseJson403();
-//        }
-//
-//        $flyer = $this->getFlyerById($request->getPathParam('id'));
-//        if (!$flyer) {
-//            return $this->getResponseJson400('no such flyer');
-//        }
-//
-//        $data = $request->getData();
-//        if (empty($data)) {
-//            return $this->getResponseJson400('Request is empty');
-//        }
-//
-//        $form = new FlyerUpdateForm($data);
-//        if (!$form->isValid()) {
-//            return $this->getResponseJson400($form->getErrors());
-//        }
-//
-//        $this->services->get(Flyer::ID)->save(
-//            $form->fillFlyer($flyer)
-//        );
-//
-//        return $this->getResponseJson200(null, 'Item updated.');
-//    }
+
+    public function patchAction(Request $request)
+    {
+        if (!$this->isAuthenticatedBasic($request)) {
+            return $this->getResponseJson403();
+        }
+
+        $page = $this->getPageById($request->getPathParam('id'));
+        if (!$page) {
+            return $this->getResponseJson400('no such page');
+        }
+
+        $data = $request->getData();
+        if (empty($data)) {
+            return $this->getResponseJson400('Request is empty');
+        }
+
+        $form = new PageUpdateForm($data);
+        if (!$form->isValid()) {
+            return $this->getResponseJson400($form->getErrors());
+        }
+
+        $this->services->get(Page::ID)->save(
+            $form->fillFlyer($page)
+        );
+
+        return $this->getResponseJson200(null, 'Item updated.');
+    }
 //
 //    public function deleteAction(Request $request)
 //    {

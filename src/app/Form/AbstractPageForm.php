@@ -9,11 +9,10 @@ use App\Entity\Page;
 
 abstract class AbstractPageForm extends AbstractForm
 {
-    protected $fields = [
-        'flyerID' => false,
-        'dateValid' => false,
-        'dateExpired' => false
-    ];
+    /**
+     * @var array
+     */
+    protected $fields = [];
 
     public function __construct(array $data)
     {
@@ -26,7 +25,7 @@ abstract class AbstractPageForm extends AbstractForm
 
     public function fillFlyer(Page $page)
     {
-        if ($this->fields['flyerID'] !== false) {
+        if (array_key_exists('flyerID', $this->fields) && $this->fields['flyerID'] !== false) {
             $page->setFlyer(App::getEm()->getReference(Flyer::class, $this->fields['flyerID']));
         }
         if ($this->fields['dateValid'] !== false) {
