@@ -34,9 +34,13 @@ class FlyersController extends AbstractController
 
     public function getAction(Request $request)
     {
-        return $this->getResponseJson200(
-            $this->getFlyerById($request->getPathParam('id'))
-        );
+        $flyer = $this->getFlyerById($request->getPathParam('id'));
+
+        if (!$flyer) {
+            return $this->getResponseJson400(['Flyer not found.']);
+        }
+
+        return $this->getResponseJson200($flyer);
     }
 
     public function postAction(Request $request)

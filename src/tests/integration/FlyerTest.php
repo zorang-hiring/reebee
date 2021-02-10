@@ -88,7 +88,35 @@ class FlyerTest extends TestCase
     }
 
     /**
-     * Test get flyer by id (anyone)
+     * Test get one flyer (anyone) - not found
+     */
+    public function testGetOne_notFound()
+    {
+        // GIVEN
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['find'])
+            ->getMock();
+        $flyerRepository->expects(self::once())
+            ->method('find')
+            ->with(5)
+            ->willReturn(null);
+        $app = $this->initApplication($flyerRepository);
+
+        // WHEN
+        $request = new Request(Request::METHOD_GET, self::BASE_URL . '/flyers/5');
+        $response = $app->dispatch($request);
+
+        // THEN
+        self::assertSame(400, $response->getStatus());
+        self::assertSame([
+            'status' => 'ERROR',
+            'errors' => ['Flyer not found.']
+        ], json_decode($response->getBody(), true));
+    }
+
+    /**
+     * Test get one flyer (anyone) - found
      */
     public function testGetOneById()
     {
