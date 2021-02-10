@@ -26,29 +26,28 @@ class FlyersController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        return $this->newResponseJson(
-            $this->services->get(Flyer::ID)->findAllValid(),
-            200
+
+        return $this->getResponseJson200(
+            $this->services->get(Flyer::ID)->findAllValid()
         );
     }
 
     public function getAction(Request $request)
     {
-        return $this->newResponseJson(
-            $this->getFlyerById($request->getPathParam('id')),
-            200
+        return $this->getResponseJson200(
+            $this->getFlyerById($request->getPathParam('id'))
         );
     }
 
     public function postAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
-            return $this->newResponseJson([], 403);
+            return $this->getResponseJson403();
         }
 
         $form = new FlyerCreateForm($request->getData());
         if (!$form->isValid()) {
-            return $this->newResponseJson(['errors' => $form->getErrors()], 400);
+            return $this->getResponseJson400($form->getErrors());
         }
 
         $flyer = new \App\Entity\Flyer();
@@ -56,46 +55,46 @@ class FlyersController extends AbstractController
             $form->fillFlyer($flyer)
         );
 
-        return $this->newResponseJson($flyer, 201);
+        return $this->getResponseJson201($flyer);
     }
 
     public function patchAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
-            return $this->newResponseJson([], 403);
+            return $this->getResponseJson403();
         }
 
         $flyer = $this->getFlyerById($request->getPathParam('id'));
         if (!$flyer) {
-            return $this->newResponseJson(['message' => 'no such flyer'], 400);
+            return $this->getResponseJson400('no such flyer');
         }
 
         $form = new FlyerUpdateForm($request->getData());
         if (!$form->isValid()) {
-            return $this->newResponseJson(['errors' => $form->getErrors()], 400);
+            return $this->getResponseJson400($form->getErrors());
         }
 
         $this->services->get(Flyer::ID)->save(
             $form->fillFlyer($flyer)
         );
 
-        return $this->newResponseJson([], 204);
+        return $this->getResponseJson204();
     }
 
     public function deleteAction(Request $request)
     {
         if (!$this->isAuthenticatedBasic($request)) {
-            return $this->newResponseJson([], 403);
+            return $this->getResponseJson403();
         }
 
         $flyer = $this->getFlyerById($request->getPathParam('id'));
         if (!$flyer) {
-            return $this->newResponseJson(['message' => 'no such flyer'], 400);
+            return $this->getResponseJson400('no such flyer');
         }
 
         $this->services->get(Flyer::ID)->remove($flyer);
 
-        return $this->newResponseJson([], 204);
+        return $this->getResponseJson204();
     }
 
     /**

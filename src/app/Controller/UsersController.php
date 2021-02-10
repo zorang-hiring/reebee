@@ -28,13 +28,13 @@ class UsersController extends AbstractController
         $form = new UserCreateForm($request, $userService->getRepository());
 
         if (!$form->isValid()) {
-            return $this->newResponseJson(['errors' => $form->getErrors()], 400);
+            return $this->getResponseJson400($form->getErrors());
         }
 
         $userService->save(
             $user = $form->fillUser(new \App\Entity\User(null))
         );
 
-        return $this->newResponseJson($user, 201);
+        return $this->getResponseJson201($user);
     }
 }

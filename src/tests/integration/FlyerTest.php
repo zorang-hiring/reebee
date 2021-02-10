@@ -65,21 +65,24 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(200, $response->getStatus());
         self::assertSame([
-            [
-                'flyerID' => 1,
-                'name' => 2,
-                'storeName' => 3,
-                'dateValid' => '2000-01-01',
-                'dateExpired' => '2001-01-01',
-                'pageCount' => 4,
-            ],
-            [
-                'flyerID' => 5,
-                'name' => 6,
-                'storeName' => 7,
-                'dateValid' => '2000-02-02',
-                'dateExpired' => '2001-02-02',
-                'pageCount' => 8,
+            'status' => 'OK',
+            'data' => [
+                [
+                    'flyerID' => 1,
+                    'name' => 2,
+                    'storeName' => 3,
+                    'dateValid' => '2000-01-01',
+                    'dateExpired' => '2001-01-01',
+                    'pageCount' => 4,
+                ],
+                [
+                    'flyerID' => 5,
+                    'name' => 6,
+                    'storeName' => 7,
+                    'dateValid' => '2000-02-02',
+                    'dateExpired' => '2001-02-02',
+                    'pageCount' => 8,
+                ]
             ]
         ], json_decode($response->getBody(), true));
     }
@@ -115,12 +118,15 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(200, $response->getStatus());
         self::assertSame([
-            'flyerID' => 5,
-            'name' => 6,
-            'storeName' => 7,
-            'dateValid' => '2000-01-01',
-            'dateExpired' => '2001-01-01',
-            'pageCount' => 8,
+            'status' => 'OK',
+            'data' => [
+                'flyerID' => 5,
+                'name' => 6,
+                'storeName' => 7,
+                'dateValid' => '2000-01-01',
+                'dateExpired' => '2001-01-01',
+                'pageCount' => 8,
+            ]
         ], json_decode($response->getBody(), true));
     }
 
@@ -188,6 +194,7 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
+            'status' => 'ERROR',
             'errors' => $expectedValidationErrors
         ], json_decode($response->getBody(), true));
     }
@@ -220,12 +227,15 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(201, $response->getStatus());
         self::assertSame([
-            'flyerID' => null, // not updated because test mocks repository save method
-            'name' => '6',
-            'storeName' => '7',
-            'dateValid' => '2000-01-01',
-            'dateExpired' => '2001-01-01',
-            'pageCount' => 8,
+            'status' => 'OK',
+            'data' => [
+                'flyerID' => null, // not updated because test mocks repository save method
+                'name' => '6',
+                'storeName' => '7',
+                'dateValid' => '2000-01-01',
+                'dateExpired' => '2001-01-01',
+                'pageCount' => 8,
+            ]
         ], json_decode($response->getBody(), true));
     }
 
@@ -271,7 +281,8 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
-            'message' => 'no such flyer'
+            'status' => 'ERROR',
+            'errors' => 'no such flyer'
         ], json_decode($response->getBody(), true));
     }
 
@@ -339,6 +350,7 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
+            'status' => 'ERROR',
             'errors' => $expectedValidationErrors
         ], json_decode($response->getBody(), true));
     }
@@ -393,7 +405,7 @@ class FlyerTest extends TestCase
 
         // THEN
         self::assertSame(204, $response->getStatus());
-        self::assertSame([], json_decode($response->getBody(), true));
+        self::assertSame(['status' => 'OK'], json_decode($response->getBody(), true));
     }
 
     /**
@@ -431,7 +443,8 @@ class FlyerTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame([
-            'message' => 'no such flyer'
+            'status' => 'ERROR',
+            'errors' => 'no such flyer'
         ], json_decode($response->getBody(), true));
     }
 
@@ -478,7 +491,7 @@ class FlyerTest extends TestCase
 
         // THEN
         self::assertSame(204, $response->getStatus());
-        self::assertSame([], json_decode($response->getBody(), true));
+        self::assertSame(['status' => 'OK'], json_decode($response->getBody(), true));
     }
 
     protected function _testNoAuth(Request $request)

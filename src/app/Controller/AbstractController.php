@@ -49,4 +49,29 @@ abstract class AbstractController
     {
         return !!$this->getAuthentication()->authenticateBasic($request);
     }
+
+    protected function getResponseJson403()
+    {
+        return $this->newResponseJson(['message' => 'Request not authorised.'], 403);
+    }
+
+    protected function getResponseJson204()
+    {
+        return $this->newResponseJson(['status' => 'OK'], 204);
+    }
+
+    protected function getResponseJson400($errors)
+    {
+        return $this->newResponseJson(['status' => 'ERROR', 'errors' => $errors], 400);
+    }
+
+    protected function getResponseJson200($data)
+    {
+        return $this->newResponseJson(['status' => 'OK', 'data' => $data], 200);
+    }
+
+    protected function getResponseJson201($data)
+    {
+        return $this->newResponseJson(['status' => 'OK', 'data' => $data], 201);
+    }
 }

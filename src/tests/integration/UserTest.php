@@ -60,6 +60,7 @@ class UserTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame(json_encode([
+            'status' => 'ERROR',
             'errors' => [
                 'username' => ['Has to be between 0 and 255 characters.'],
                 'password' => ['Has to be between 3 and 20 characters.']
@@ -102,6 +103,7 @@ class UserTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame(json_encode([
+            'status' => 'ERROR',
             'errors' => [
                 'username' => ['Username already exists.']
             ]
@@ -138,7 +140,12 @@ class UserTest extends TestCase
         self::assertNotEmpty($savedPassword, 'password should be randomly encrypted');
         self::assertNotSame('somePassword', $savedPassword, 'password should be encrypted');
         self::assertSame(201, $response->getStatus());
-        self::assertSame(json_encode(['username' => 'bob']), $response->getBody());
+        self::assertSame(json_encode([
+            'status' => 'OK',
+            'data' => [
+                'username' => 'bob'
+            ]
+        ]), $response->getBody());
     }
 
     protected function initApplication(UserRepositoryInterface $userRepository, array $options = [])

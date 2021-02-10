@@ -35,6 +35,7 @@ class AuthTest extends TestCase
         // THEN
         self::assertSame(400, $response->getStatus());
         self::assertSame(json_encode([
+            'status' => 'ERROR',
             'errors' => ['Wrong credentials provided.']
         ]), $response->getBody());
     }

@@ -26,8 +26,6 @@ class AuthController extends AbstractController
             ], 200);
         }
 
-        return $this->newResponseJson([
-            'errors' => ['Wrong credentials provided.']
-        ], 400);
+        return $this->getResponseJson400(['Wrong credentials provided.']);
     }
 }
