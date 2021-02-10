@@ -10,7 +10,8 @@ class PageUpdateForm extends AbstractPageForm
      */
     protected $fields = [
         'dateValid' => false,
-        'dateExpired' => false
+        'dateExpired' => false,
+        'pageNumber' => false
     ];
     
     public function isValid()
@@ -28,6 +29,10 @@ class PageUpdateForm extends AbstractPageForm
                 $this->addError($field, 'Has to be date in the form YYYY-MM-DD.');
 
             }
+        }
+
+        if ($this->fields['pageNumber'] !== false && !is_numeric($this->fields['pageNumber'])) {
+            $this->addError('pageNumber', 'Has to be empty or integer.');
         }
 
         return empty($this->getErrors());

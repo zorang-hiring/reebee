@@ -15,6 +15,7 @@ use App\Request;
 use App\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Stub\Repository\UserRepositoryStub;
+use Doctrine\Common\Collections\ArrayCollection;
 
 //- Pages should be retrievable by requesting all pages for a flyerID or by pageID
 //- Anyone should be able to perform the Read operation for pages
@@ -63,7 +64,7 @@ class PageTest extends AbstractTestCase
             ->getMock();
         $foundFlyer->expects(self::atLeastOnce())
             ->method('getPages')
-            ->willReturn([
+            ->willReturn(new ArrayCollection([
                 (new \App\Entity\Page())
                     ->setPageID(1)
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'))
@@ -74,7 +75,7 @@ class PageTest extends AbstractTestCase
                     ->setDateValid(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-02-02 00:00:00'))
                     ->setDateExpired(\DateTime::createFromFormat('Y-m-d H:i:s', '2001-02-02 00:00:00'))
                     ->setPageNumber(8)
-            ]);
+            ]));
 
         $flyerRepository = self::getMockBuilder(FlyerRepository::class)
             ->disableOriginalConstructor()

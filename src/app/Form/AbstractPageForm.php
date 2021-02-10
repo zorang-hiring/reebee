@@ -23,7 +23,7 @@ abstract class AbstractPageForm extends AbstractForm
         }
     }
 
-    public function fillFlyer(Page $page)
+    public function fillPage(Page $page)
     {
         if (array_key_exists('flyerID', $this->fields) && $this->fields['flyerID'] !== false) {
             $page->setFlyer(App::getEm()->getReference(Flyer::class, $this->fields['flyerID']));
@@ -37,6 +37,9 @@ abstract class AbstractPageForm extends AbstractForm
             $page->setDateExpired(
                 \DateTime::createFromFormat('Y-m-d H:i:s', $this->fields['dateExpired'] . ' 00:00:00')
             );
+        }
+        if (array_key_exists('pageNumber', $this->fields) && $this->fields['pageNumber'] !== false) {
+            $page->setPageNumber($this->fields['pageNumber']);
         }
         return $page;
     }

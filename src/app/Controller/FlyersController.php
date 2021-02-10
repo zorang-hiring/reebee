@@ -47,7 +47,7 @@ class FlyersController extends AbstractController
             return $this->getResponseJson400(['Flyer not found.']);
         }
 
-        return $this->getResponseJson200($flyer->getPages());
+        return $this->getResponseJson200($flyer->getPages()->toArray());
     }
 
     /**
