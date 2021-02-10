@@ -73,7 +73,12 @@ class FlyersController extends AbstractController
             return $this->getResponseJson400('no such flyer');
         }
 
-        $form = new FlyerUpdateForm($request->getData());
+        $data = $request->getData();
+        if (empty($data)) {
+            return $this->getResponseJson400('Request is empty');
+        }
+
+        $form = new FlyerUpdateForm($data);
         if (!$form->isValid()) {
             return $this->getResponseJson400($form->getErrors());
         }
