@@ -18,14 +18,17 @@ class PageUpdateForm extends AbstractPageForm
     {
         // required fields
         foreach (['dateValid', 'dateExpired'] as $field) {
-            if ($this->fields[$field] === false || strlen((string) $this->fields[$field]) === 0) {
-                $this->addError($field, 'Field is required.');
+            if ($this->fields[$field] !== false && strlen((string) $this->fields[$field]) === 0) {
+                $this->addError($field, 'Field can not be empty.');
             }
         }
 
         // check dates
         foreach (['dateValid', 'dateExpired'] as $field) {
-            if (\DateTime::createFromFormat('Y-m-d', (string) $this->fields[$field]) === false) {
+            if (
+                $this->fields[$field] !== false
+                && \DateTime::createFromFormat('Y-m-d', (string) $this->fields[$field]) === false
+            ) {
                 $this->addError($field, 'Has to be date in the form YYYY-MM-DD.');
 
             }
