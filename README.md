@@ -16,10 +16,16 @@ cd src && php composer.phar watch
 ```
 
 ## todo
-- check and set app to utc
+
+must:
 - page and flyer indentifiers make guid
+- generate order number on insert
 - get all pages - order by page number
+
+maybe:
 - make possible to update page numeric order?
+- check and set app to utc
+- swagger
 
 ## API docs
 [http://localhost:8080/api-ui/](http://localhost:8080/api-ui/)

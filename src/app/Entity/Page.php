@@ -136,6 +136,14 @@ class Page implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return Flyer
+     */
+    public function getFlyer()
+    {
+        return $this->flyer;
+    }
+
     public function jsonSerialize()
     {
         return [

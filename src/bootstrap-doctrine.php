@@ -23,10 +23,14 @@ $config = Setup::createAnnotationMetadataConfiguration(
     [realpath(__DIR__ . '/app/Entity')],
     $isDevMode, null, null, false
 );
+$eventManager = new \Doctrine\Common\EventManager();
+$eventManager->addEventSubscriber(new \App\Subscriber\PageSubscriber());
 // configure entity manager provider
 class GetEntityManager {
     static protected $em;
     static function setEm(EntityManagerInterface $em) {self::$em = $em;}
     static function getEm():EntityManagerInterface {return self::$em;}
 }
-GetEntityManager::setEm(EntityManager::create($dbParams, $config));
+GetEntityManager::setEm(
+    EntityManager::create($dbParams, $config, $eventManager)
+);
