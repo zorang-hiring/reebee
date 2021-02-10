@@ -12,8 +12,8 @@ class FlyerUpdateForm extends AbstractFlyerForm
     {         
         foreach (['name', 'storeName', 'dateValid', 'dateExpired'] as $field) {
             if (
-                $this->fields{$field} !== false
-                && strlen((string) $this->fields{$field}) === 0
+                $this->fields[$field] !== false
+                && strlen((string) $this->fields[$field]) === 0
             ) {
                 $this->addError($field, 'Field can not be empty.');
             }
@@ -22,8 +22,8 @@ class FlyerUpdateForm extends AbstractFlyerForm
         // check dates
         foreach (['dateValid', 'dateExpired'] as $field) {
             if (
-                $this->fields{$field} !== false
-                && \DateTime::createFromFormat('Y-m-d', (string) $this->fields{$field}) === false
+                $this->fields[$field] !== false
+                && \DateTime::createFromFormat('Y-m-d', (string) $this->fields[$field]) === false
             ) {
                 $this->addError($field, 'Has to be date in the form YYYY-MM-DD.');
 

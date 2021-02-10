@@ -207,6 +207,7 @@ class PageTest extends AbstractTestCase
                 [
                     'dateValid' => ['Has to be date in the form YYYY-MM-DD.'],
                     'dateExpired' => ['Has to be date in the form YYYY-MM-DD.'],
+                    'flyerID' => ['Flyer "1" does not exist.']
                 ]
             ]
         ];
@@ -225,7 +226,11 @@ class PageTest extends AbstractTestCase
             ->setMethods(['save'])
             ->getMockForAbstractClass();
         $pageRepository->expects(self::never())->method('save');
-        $app = $this->initApplication(null, $pageRepository);
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['find'])
+            ->getMockForAbstractClass();
+        $app = $this->initApplication($flyerRepository, $pageRepository);
 
         // WHEN
         $request = new Request(Request::METHOD_POST,  '/pages');
@@ -253,7 +258,15 @@ class PageTest extends AbstractTestCase
             ->getMockForAbstractClass();
         $pageRepository->expects(self::once())
             ->method('save');
-        $app = $this->initApplication(null, $pageRepository);
+        $flyerRepository = self::getMockBuilder(FlyerRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findOne'])
+            ->getMockForAbstractClass();
+        $flyerRepository->expects(self::atLeastOnce())
+            ->method('findOne')
+            ->with(6)
+            ->willReturn((new Flyer())->setFlyerID(6));
+        $app = $this->initApplication($flyerRepository, $pageRepository);
 
         // WHEN
         $request = new Request(Request::METHOD_POST,  '/pages');

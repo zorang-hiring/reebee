@@ -49,13 +49,16 @@ class PageRepository extends EntityRepository implements PageRepositoryInterface
      */
     public function getMaxPageNumberByFlyer(Flyer $flyer)
     {
-        $statement = $this->getEntityManager()->getConnection()->prepare(sprintf(
-            'select MAX(pageNumber) AS maxPageNumber from pages where flyerID = %d',
+        $sql = sprintf(
+            'select MAX(pageNumber) AS maxPageNumber from pages where flyerID = "%s"',
             $flyer->getFlyerID()
-        ));
+        );
+
+        $statement = $this->getEntityManager()->getConnection()->prepare($sql);
         $statement->execute();
         $result = $statement->fetch();
-        if (!empty($result) && $result['maxPageNumber']) {
+
+        if (array_key_exists('maxPageNumber', $result)) {
             return $result['maxPageNumber'] + 1;
         }
         return 0;

@@ -7,6 +7,7 @@ use App\Form\FlyerSaveForm;
 use App\Form\PageCreateForm;
 use App\Form\PageUpdateForm;
 use App\Request;
+use App\Service\Flyer;
 use App\Service\Page;
 
 class PagesController extends AbstractController
@@ -28,7 +29,7 @@ class PagesController extends AbstractController
             return $this->getResponseJson403();
         }
 
-        $form = new PageCreateForm($request->getData());
+        $form = new PageCreateForm($request->getData(), $this->services->get(Flyer::ID));
         if (!$form->isValid()) {
             return $this->getResponseJson400($form->getErrors());
         }
