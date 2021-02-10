@@ -14,7 +14,6 @@ class Flyer implements \JsonSerializable
      * @ORM\Id
      * @ORM\Column (type="integer")
      * @ORM\GeneratedValue
-     * @var integer
      *
      * @var Integer
      */

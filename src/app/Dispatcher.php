@@ -85,6 +85,7 @@ class Dispatcher
     protected function getActionName()
     {
         $pathElements = explode('/', trim($this->request->getPath(), '/'));
+
         if (count($pathElements) <= 1) {
             // if path contains only one level
             // standard reset actions
@@ -99,34 +100,39 @@ class Dispatcher
             return null;
         }
 
-        if (is_numeric($pathElements[1])) {
-            // if path contains second level too
-            // we consider that path is: "something/<number>" according to REST standards
+        // if second level is not empty value
+        if (!empty($pathElements[1])) {
+
+            // If 3rd path element is defined e.g. "/flyers/4/pages" (in this case pages),
+            // then action will be "getPagesAction" or "postPagesAction"... of FlyersController.
+            // If 3rd path element is NOT defined e.g. "/flyers" or "/flyers/4",
+            // then action will be "getAction" or "postAction"... of FlyersController.
+
+            // define suffix
+            $actionSuffix = empty($pathElements[2])
+                ? 'Action'
+                : ucfirst(strtolower($pathElements[2])) . 'Action';
+
+            // we consider that path is: "something/<ID>*" according to REST standards
+            // so add ID param to the Request
             $this->request->setPathParam('id', $pathElements[1]);
-            // standard reset actions
+
             switch ($this->request->getMethod()) {
                 case Request::METHOD_GET:
-                    return 'getAction';
+                    return 'get' . $actionSuffix;
                     break;
                 case Request::METHOD_POST:
-                    return 'postAction';
+                    return 'post' . $actionSuffix;
                     break;
                 case Request::METHOD_PATCH:
-                    return 'patchAction';
+                    return 'patch' . $actionSuffix;
                     break;
                 case Request::METHOD_DELETE:
-                    return 'deleteAction';
+                    return 'delete' . $actionSuffix;
                     break;
             }
         }
 
-        // custom action
-        $action = str_replace(
-            '-',
-            '',
-            ucwords(strtolower($pathElements[1]), '-')
-        );
-
-        return $action . 'Action';
+        return null;
     }
 }

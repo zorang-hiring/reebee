@@ -15,18 +15,7 @@ use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 class FlyerTest extends TestCase
 {
-    const BASE_URL = 'http://some.com';
-
     const EXISTING_USER_NAME = 'some-existed-user';
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        // mock app current time
-//        $knownDate = \Carbon\Carbon::create(2000, 5, 6);
-//        \Carbon\Carbon::setTestNow($knownDate);
-    }
 
     /**
      * Test that anyone can get all flyers
@@ -59,7 +48,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_GET, self::BASE_URL . '/flyers');
+        $request = new Request(Request::METHOD_GET,  '/flyers');
         $response = $app->dispatch($request);
 
         // THEN
@@ -104,7 +93,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_GET, self::BASE_URL . '/flyers/5');
+        $request = new Request(Request::METHOD_GET,  '/flyers/5');
         $response = $app->dispatch($request);
 
         // THEN
@@ -140,7 +129,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_GET, self::BASE_URL . '/flyers/5');
+        $request = new Request(Request::METHOD_GET,  '/flyers/5');
         $response = $app->dispatch($request);
 
         // THEN
@@ -164,7 +153,7 @@ class FlyerTest extends TestCase
     public function testCreate_noAuth()
     {
         $this->_testNoAuth(
-            new Request(Request::METHOD_POST, self::BASE_URL . '/flyers')
+            new Request(Request::METHOD_POST,  '/flyers')
         );
     }
 
@@ -214,7 +203,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $request = new Request(Request::METHOD_POST,  '/flyers');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData($postData);
         $response = $app->dispatch($request);
@@ -241,7 +230,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
+        $request = new Request(Request::METHOD_POST,  '/flyers');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData([
             'name' => '6',
@@ -273,7 +262,7 @@ class FlyerTest extends TestCase
     public function testUpdate_noAuth()
     {
         $this->_testNoAuth(
-            new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5')
+            new Request(Request::METHOD_PATCH,  '/flyers/5')
         );
     }
 
@@ -295,7 +284,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/3');
+        $request = new Request(Request::METHOD_PATCH,  '/flyers/3');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData([
             'name' => '6',
@@ -370,7 +359,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
+        $request = new Request(Request::METHOD_PATCH,  '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData($postData);
         $response = $app->dispatch($request);
@@ -420,7 +409,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
+        $request = new Request(Request::METHOD_PATCH,  '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $request->setData([
             'pageCount' => 42,
@@ -442,7 +431,7 @@ class FlyerTest extends TestCase
     public function testDelete_noAuth()
     {
         $this->_testNoAuth(
-            new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5')
+            new Request(Request::METHOD_DELETE,  '/flyers/5')
         );
     }
 
@@ -464,7 +453,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/3');
+        $request = new Request(Request::METHOD_DELETE,  '/flyers/3');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $response = $app->dispatch($request);
 
@@ -513,7 +502,7 @@ class FlyerTest extends TestCase
         $app = $this->initApplication($flyerRepository);
 
         // WHEN
-        $request = new Request(Request::METHOD_DELETE, self::BASE_URL . '/flyers/5');
+        $request = new Request(Request::METHOD_DELETE,  '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
         $response = $app->dispatch($request);
 

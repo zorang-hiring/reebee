@@ -17,8 +17,6 @@ use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 class AuthTest extends TestCase
 {
-    const BASE_URL = 'http://some.com';
-
     /**
      * Test auth wrong credentials
      */
@@ -28,7 +26,7 @@ class AuthTest extends TestCase
         $app = $this->initApplication(new UserRepositoryStub(), []);
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/auth');
+        $request = new Request(Request::METHOD_POST,  '/auth');
         $request->setData(['username' => 'jon', 'password' => '123']);
         $response = $app->dispatch($request);
 
@@ -57,7 +55,7 @@ class AuthTest extends TestCase
         $app = $this->initApplication($userRepository, []);
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/auth');
+        $request = new Request(Request::METHOD_POST,  '/auth');
         $request->setData(['username' => 'bob', 'password' => '123']);
         $response = $app->dispatch($request);
 

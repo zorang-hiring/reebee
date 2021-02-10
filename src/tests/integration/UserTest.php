@@ -16,8 +16,6 @@ use Tests\Integration\Stub\Repository\UserRepositoryStub;
 
 class UserTest extends TestCase
 {
-    const BASE_URL = 'http://some.com';
-
     /**
      * Test create user - not authorised request
      */
@@ -27,7 +25,7 @@ class UserTest extends TestCase
         $app = $this->initApplication(new UserRepositoryStub(), []);
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
+        $request = new Request(Request::METHOD_POST,  '/users');
         $request->setData(['username' => 'bob', 'password' => '123']);
         $response = $app->dispatch($request);
 
@@ -52,7 +50,7 @@ class UserTest extends TestCase
         );
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
+        $request = new Request(Request::METHOD_POST,  '/users');
         $request->setData(['username' => '', 'password' => '']);
         $request->setHeaders([
             // authorise request with Header:
@@ -95,7 +93,7 @@ class UserTest extends TestCase
         );
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
+        $request = new Request(Request::METHOD_POST,  '/users');
         $request->setData(['username' => 'bob', 'password' => 'somePass']);
         $request->setHeaders([
             // authorise request with Header:
@@ -127,7 +125,7 @@ class UserTest extends TestCase
         );
 
         // WHEN
-        $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
+        $request = new Request(Request::METHOD_POST,  '/users');
         $request->setData(['username' => 'bob', 'password' => 'somePassword']);
         $request->setHeaders([
             // authorise request with Header:

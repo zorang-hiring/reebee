@@ -26,7 +26,6 @@ class FlyersController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-
         return $this->getResponseJson200(
             $this->services->get(Flyer::ID)->findAllValid()
         );
@@ -41,6 +40,17 @@ class FlyersController extends AbstractController
         }
 
         return $this->getResponseJson200($flyer);
+    }
+
+    public function getPagesAction(Request $request)
+    {
+        $flyer = $this->getFlyerById($request->getPathParam('id'));
+
+        if (!$flyer) {
+            return $this->getResponseJson400(['Flyer not found.']);
+        }
+
+        return $this->getResponseJson200($flyer->getPages());
     }
 
     public function postAction(Request $request)
