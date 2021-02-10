@@ -60,9 +60,9 @@ abstract class AbstractController
         return $this->newResponseJson(['status' => 'OK', 'data' => $data], 201);
     }
 
-    protected function getResponseJson204()
+    protected function getResponseJson204($message)
     {
-        return $this->newResponseJson(['status' => 'OK'], 204);
+        return $this->newResponseJson(['status' => 'OK', 'message' => $message], 204);
     }
 
     protected function getResponseJson400($errors)

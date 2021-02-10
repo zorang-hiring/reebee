@@ -433,7 +433,7 @@ class FlyerTest extends TestCase
 
         // THEN
         self::assertSame(204, $response->getStatus());
-        self::assertSame(['status' => 'OK'], json_decode($response->getBody(), true));
+        self::assertSame(['status' => 'OK', 'message' => 'Item updated.'], json_decode($response->getBody(), true));
     }
 
     /**
@@ -472,7 +472,7 @@ class FlyerTest extends TestCase
         self::assertSame(400, $response->getStatus());
         self::assertSame([
             'status' => 'ERROR',
-            'errors' => 'no such flyer'
+            'errors' => 'No such flyer.'
         ], json_decode($response->getBody(), true));
     }
 
@@ -519,7 +519,7 @@ class FlyerTest extends TestCase
 
         // THEN
         self::assertSame(204, $response->getStatus());
-        self::assertSame(['status' => 'OK'], json_decode($response->getBody(), true));
+        self::assertSame(['status' => 'OK', 'message' => 'Item deleted.'], json_decode($response->getBody(), true));
     }
 
     protected function _testNoAuth(Request $request)

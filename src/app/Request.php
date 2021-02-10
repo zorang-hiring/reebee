@@ -30,9 +30,9 @@ class Request
     protected $content;
 
     /**
-     * @var mixed
+     * @var array
      */
-    protected $data;
+    protected $data = [];
 
     /**
      * Request constructor.
@@ -65,15 +65,21 @@ class Request
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         if ($this->isJson()) {
-            return json_decode($this->getContent(), true);
+            $data = json_decode($this->getContent(), true);
+            if (is_array($data)) {
+                return $data;
+            }
         }
         return $this->data;
     }
 
-    public function setData($data)
+    public function setData(array $data)
     {
         $this->data = $data;
     }
