@@ -19,7 +19,6 @@ cd src && php composer.phar watch
 
 must:
 - page and flyer indentifiers make guid
-- generate order number on insert
 - get all pages - order by page number
 
 maybe:

@@ -58,6 +58,7 @@ class Flyer implements \JsonSerializable
 
     /**
      * @ORM\OneToMany(targetEntity="Page", mappedBy="flyer")
+     * @ORM\OrderBy({"pageNumber" = "ASC"})
      *
      * @var Page[]
      */
@@ -167,7 +168,7 @@ class Flyer implements \JsonSerializable
     }
 
     /**
-     * @return ArrayCollection|Page[]
+     * @return Page[]|ArrayCollection
      */
     public function getPages()
     {
