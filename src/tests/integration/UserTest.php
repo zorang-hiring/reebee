@@ -28,7 +28,7 @@ class UserTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-        $request->setPostData(['username' => 'bob', 'password' => '123']);
+        $request->setData(['username' => 'bob', 'password' => '123']);
         $response = $app->dispatch($request);
 
         // THEN
@@ -50,7 +50,7 @@ class UserTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-        $request->setPostData(['username' => '', 'password' => '']);
+        $request->setData(['username' => '', 'password' => '']);
         $request->setHeaders([
             // authorise request with Header:
             'Authorization' => 'Basic some-api-token'
@@ -92,7 +92,7 @@ class UserTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-        $request->setPostData(['username' => 'bob', 'password' => 'somePass']);
+        $request->setData(['username' => 'bob', 'password' => 'somePass']);
         $request->setHeaders([
             // authorise request with Header:
             'Authorization' => 'Basic some-api-token'
@@ -123,7 +123,7 @@ class UserTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/users');
-        $request->setPostData(['username' => 'bob', 'password' => 'somePassword']);
+        $request->setData(['username' => 'bob', 'password' => 'somePassword']);
         $request->setHeaders([
             // authorise request with Header:
             'Authorization' => 'Basic some-api-token'

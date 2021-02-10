@@ -182,7 +182,7 @@ class FlyerTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
-        $request->setPostData($postData);
+        $request->setData($postData);
         $response = $app->dispatch($request);
 
         // THEN
@@ -208,7 +208,7 @@ class FlyerTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/flyers');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
-        $request->setPostData([
+        $request->setData([
             'name' => '6',
             'storeName' => '7',
             'dateValid' => '2000-01-01',
@@ -259,7 +259,7 @@ class FlyerTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/3');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
-        $request->setPostData([
+        $request->setData([
             'name' => '6',
             'storeName' => '7',
             'dateValid' => '2000-01-01',
@@ -333,7 +333,7 @@ class FlyerTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
-        $request->setPostData($postData);
+        $request->setData($postData);
         $response = $app->dispatch($request);
 
         // THEN
@@ -382,7 +382,7 @@ class FlyerTest extends TestCase
         // WHEN
         $request = new Request(Request::METHOD_PATCH, self::BASE_URL . '/flyers/5');
         $this->addBasicAuthHeader($request, ['user' => self::EXISTING_USER_NAME]);
-        $request->setPostData([
+        $request->setData([
             'pageCount' => 42,
             'storeName' => 'new storeName',
             'name' => 'new name',

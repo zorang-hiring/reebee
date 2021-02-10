@@ -15,8 +15,6 @@ class Request
         'query' => null
     ];
 
-    protected $postData = [];
-
     protected $headers = [];
 
     protected $pathParams = [];
@@ -25,6 +23,16 @@ class Request
      * @var string
      */
     protected $method;
+
+    /**
+     * @var string
+     */
+    protected $content;
+
+    /**
+     * @var mixed
+     */
+    protected $data;
 
     /**
      * Request constructor.
@@ -37,6 +45,39 @@ class Request
         $this->urlElements['query'] = parse_url($uri, PHP_URL_QUERY);
         $this->method = $method;
     }
+
+    public function setContent($content)
+    {
+        $this->content =  $content;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function isJson()
+    {
+        $headerV = $this->getHeaderValue('Content-Type');
+        if ($headerV && strtolower($headerV) === 'application/json') {
+            return true;
+        }
+        return false;
+    }
+
+    public function getData()
+    {
+        if ($this->isJson()) {
+            return json_decode($this->getContent(), true);
+        }
+        return $this->data;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
 
     /**
      * @return null|string
@@ -59,11 +100,6 @@ class Request
         return $output;
     }
 
-    public function setPostData(array $postData)
-    {
-        $this->postData = $postData;
-    }
-
     public function setHeaders(array $headers)
     {
         $this->headers = $headers;
@@ -76,14 +112,6 @@ class Request
     public function getHeaderValue($headerName)
     {
         return array_key_exists($headerName, $this->headers) ? $this->headers[$headerName] : null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPostData()
-    {
-        return $this->postData;
     }
 
     public function getMethod()

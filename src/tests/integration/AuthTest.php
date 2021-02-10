@@ -29,7 +29,7 @@ class AuthTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/auth');
-        $request->setPostData(['username' => 'jon', 'password' => '123']);
+        $request->setData(['username' => 'jon', 'password' => '123']);
         $response = $app->dispatch($request);
 
         // THEN
@@ -57,7 +57,7 @@ class AuthTest extends TestCase
 
         // WHEN
         $request = new Request(Request::METHOD_POST, self::BASE_URL . '/auth');
-        $request->setPostData(['username' => 'bob', 'password' => '123']);
+        $request->setData(['username' => 'bob', 'password' => '123']);
         $response = $app->dispatch($request);
 
         // THEN

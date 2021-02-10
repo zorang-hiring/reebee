@@ -20,6 +20,7 @@ $servicesContainer->addServices(User::ID, new User($userRepository));
 
 // build request
 $request = new Request($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']); // todo use getenv
+$request->setContent(file_get_contents('php://input'));
 
 // bootstrap app and print output
 $app = new App($servicesContainer, $_ENV);

@@ -21,7 +21,7 @@ class UserCreateForm extends AbstractForm
 
     public function __construct(Request $request, UserRepositoryInterface $userRepository)
     {
-        $data = $request->getPostData();
+        $data = $request->getData();
         $this->username = $data['username'];
         $this->password = $data['password'];
         $this->userRepository = $userRepository;

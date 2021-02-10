@@ -20,9 +20,9 @@ class AuthController extends AbstractController
         /** @var Auth $authService */
         $authService = $this->services->get(Auth::ID);
 
-        if ($user = $authService->findUserByCredentials($request, $request->getPostData()['password'])) {
+        if ($user = $authService->findUserByCredentials($request, $request->getData()['password'])) {
             return $this->newResponseJson([
-                'token' => $authService->generateBasicToken($user, $request->getPostData()['password'])
+                'token' => $authService->generateBasicToken($user, $request->getData()['password'])
             ], 200);
         }
 

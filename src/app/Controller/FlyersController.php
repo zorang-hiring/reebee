@@ -46,7 +46,7 @@ class FlyersController extends AbstractController
             return $this->newResponseJson([], 403);
         }
 
-        $form = new FlyerCreateForm($request->getPostData());
+        $form = new FlyerCreateForm($request->getData());
         if (!$form->isValid()) {
             return $this->newResponseJson(['errors' => $form->getErrors()], 400);
         }
@@ -70,7 +70,7 @@ class FlyersController extends AbstractController
             return $this->newResponseJson(['message' => 'no such flyer'], 400);
         }
 
-        $form = new FlyerUpdateForm($request->getPostData());
+        $form = new FlyerUpdateForm($request->getData());
         if (!$form->isValid()) {
             return $this->newResponseJson(['errors' => $form->getErrors()], 400);
         }
