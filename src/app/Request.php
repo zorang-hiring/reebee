@@ -162,12 +162,4 @@ class Request
         }
         return null;
     }
-
-    /**
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        return $this->getEnvVar('APP_HTTP_BASE_URL');
-    }
 }
