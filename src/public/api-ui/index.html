@@ -40,7 +40,7 @@
     function getSpecsLocation() {
       let specsLocation = window.location.protocol + "//" + window.location.hostname;
       if (window.location.port) {
-        specsLocation += window.location.port;
+        specsLocation += ':' + window.location.port;
       }
       specsLocation += '/docs';
       console.log('swagger specs location', specsLocation);
