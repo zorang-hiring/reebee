@@ -29,7 +29,7 @@ Use `YWRtaW46c29tZXBhc3M=` Basic Authentication Header token to be able to creat
 - PATCH **http://localhost:8080/flyers/{id}** *(update one)*
 - DELETE **http://localhost:8080/flyers/{id}** *(delete one)*
 
-Available fields for POST and PATCH:
+Available fields for POST and PATCH (PATCH allows partial update):
 
 - "name"
 - "storeName"
@@ -48,8 +48,9 @@ Available fields for POST:
 - "flyerID"
 - "dateValid"
 - "dateExpired"
+- "pageNumber" (optional)
 
-Available fields for PUT:
+Available fields for PATCH (PATCH allows partial update):
 
 - "dateValid"
 - "dateExpired"

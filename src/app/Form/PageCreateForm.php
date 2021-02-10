@@ -21,7 +21,8 @@ class PageCreateForm extends AbstractPageForm
     protected $fields = [
         'flyerID' => false,
         'dateValid' => false,
-        'dateExpired' => false
+        'dateExpired' => false,
+        'pageNumber' => false
     ];
 
     public function isValid()
@@ -44,6 +45,10 @@ class PageCreateForm extends AbstractPageForm
         // validate that flyer exists 
         if (!empty($this->fields['flyerID']) && !$this->flyerService->find($this->fields['flyerID'])) {
             $this->addError('flyerID', sprintf('Flyer "%s" does not exist.', $this->fields['flyerID']));
+        }
+
+        if ($this->fields['pageNumber'] !== false && !is_numeric($this->fields['pageNumber'])) {
+            $this->addError('pageNumber', 'Has to be empty or integer.');
         }
 
         return empty($this->getErrors());

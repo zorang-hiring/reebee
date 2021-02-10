@@ -23,9 +23,9 @@ class PageSubscriber implements EventSubscriber
         $entity = $args->getObject();
         $entityManager = $args->getObjectManager();
 
-        // on Page insert, calculate PageNumber
+        // on Page insert, if Page Number is not provided calculate it
         if ($entity instanceof Page) {
-            if (!$entity->getPageID()) {
+            if (!$entity->getPageID() && $entity->getPageNumber() === null) {
                 /** @var PageRepositoryInterface $repo */
                 $repo = $entityManager->getRepository(Page::class);
 
