@@ -1,5 +1,5 @@
 CREATE TABLE flyers (
-  flyerID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  flyerID INT AUTO_INCREMENT NOT NULL,
   name VARCHAR(255) NOT NULL,
   storeName VARCHAR(255) NOT NULL,
   dateValid DATE NOT NULL,
@@ -8,11 +8,11 @@ CREATE TABLE flyers (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
 CREATE TABLE pages (
-  pageID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  pageID INT AUTO_INCREMENT NOT NULL,
   dateValid DATE NOT NULL,
   dateExpired DATE NOT NULL,
   pageNumber INT NOT NULL,
-  flyerID CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+  flyerID INT NOT NULL,
   INDEX IDX_2074E575F57921F4 (flyerID),
   PRIMARY KEY(pageID)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
