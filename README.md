@@ -24,17 +24,17 @@ Use `YWRtaW46c29tZXBhc3M=` Basic Authentication Header token to be able to creat
 #### Flyers
 
 - GET **http://localhost:8080/flyers** *(find all Active)*
-- GET **http://localhost:8080/flyers/\<id\>** *(get one)*
+- GET **http://localhost:8080/flyers/{id}** *(get one)*
 - POST **http://localhost:8080/flyers** *(create one)*
-- PATCH **http://localhost:8080/flyers/\<id\>** *(update one)*
-- DELETE **http://localhost:8080/flyers/\<id\>** *(delete one)*
+- PATCH **http://localhost:8080/flyers/{id}** *(update one)*
+- DELETE **http://localhost:8080/flyers/{id}** *(delete one)*
 
 #### Pages
 
-- GET **http://localhost:8080/flyers/\<flyerID\>/pages** *(get Pages of the Flyer)*
+- GET **http://localhost:8080/flyers/{flyerID}/pages** *(get Pages of the Flyer)*
 - POST **http://localhost:8080/pages** *(create one)*
-- PATCH **http://localhost:8080/pages/\<id\>** *(update one)*
-- DELETE **http://localhost:8080/pages/\<id\>** *(delete one)*
+- PATCH **http://localhost:8080/pages/{id}** *(update one)*
+- DELETE **http://localhost:8080/pages/{id}** *(delete one)*
 
 ## Tests
 
